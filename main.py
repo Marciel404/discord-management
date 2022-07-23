@@ -4,7 +4,7 @@ intents = discord.Intents.all()
 
 client = commands.Bot(
 
-command_prefix = 'h!',
+command_prefix = configData['prefix'],
 
 help_command = None,
 

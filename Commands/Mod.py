@@ -53,17 +53,17 @@ class Mod(commands.Cog):
 
             motivo = 'Motivo não informado'
 
-        e1 = discord.Embed(title = 'kick', description = f'Voce esta prestes a expulsar {membro.mention}')
+        e1 = discord.Embed(title = 'kick', description = f'Voce esta prestes a banir {membro.mention}')
 
         if membro == self.bot.user:
 
-            await ctx.response.send_message('Não posso expulsar a mim mesmo')
+            await ctx.response.send_message('Não posso banir a mim mesmo')
 
             return
 
         elif  membro == ctx.author:
 
-            await ctx.response.send_message('Você não pode expulsar a si mesmo')
+            await ctx.response.send_message('Você não pode banir a si mesmo')
 
             return
 
@@ -81,10 +81,7 @@ class Mod(commands.Cog):
     @discord.option(name = 'img', description = 'Escolha a imagem da embed')
     @discord.option(name = 'Motivo', description = 'Escreva o conteudo da embed')
     @commands.has_permissions(manage_channels = True)
-    async def say(self, ctx, channel: discord.TextChannel = None, title = None, img = None, *, msg = None):
-
-        if channel == None:
-            await ctx.response.send_message('Você precisa escolher o chat para enviar a embed')
+    async def embed(self, ctx, channel: discord.TextChannel = None, title = None, img = None, *, msg = None):
 
         if title == None:
             title = ''
@@ -105,10 +102,15 @@ class Mod(commands.Cog):
         e.set_image(url = img)
         e.set_footer(text = f'Ass. {ctx.guild.name}', icon_url = ctx.guild.icon)
 
-        channel2 = self.bot.get_channel(channel.id)
+        if channel == None:
 
+            await ctx.send(embed = e)
 
-        await channel2.send(embed = e)
+        else:
+
+            channel2 = self.bot.get_channel(channel.id)
+
+            await channel2.send(embed = e)
 
     @discord.slash_command(name = 'clear', description = 'Limpa o chat')
     @discord.option(name = 'quantidade',type = int, description = 'Escolha a quantidade de mensagens a limpar')
@@ -132,8 +134,8 @@ class Mod(commands.Cog):
             await ctx.response.send_message(f"O chat teve {len(purge)} mensagens apagadas por {ctx.author.mention}")
 
     @discord.slash_command(name = 'banid', description ='bane um membro que não está no server')
-    @discord.option(name = 'Membro', description = 'Coloque o id da pesoa a banir')
-    @discord.option(name = 'Motivo', description = 'Escreva o motivo de Banir')
+    @discord.option(name = 'membro', description = 'Coloque o id da pesoa a banir')
+    @discord.option(name = 'motivo', description = 'Escreva o motivo de Banir')
     @commands.bot_has_permissions(ban_members = True)
     @commands.has_permissions(ban_members = True)
     async def banid(self, ctx, membro: int, *,motivo=None):
@@ -159,23 +161,21 @@ class Mod(commands.Cog):
         await ctx.response.send_message(embed = e1, view = banid(self.bot, id,motivo,ctx))
 
     @discord.slash_command(name = 'unban', description = 'Desbane um membro')
+    @discord.option(name = 'id', description = 'Coloque o id do membro a desbanir')
+    @discord.option(name = 'motivo', description = 'Escreva o motivo de Banir')
     @commands.bot_has_permissions(ban_members = True)
     @commands.has_permissions(ban_members = True)
-    async def unban(self, ctx, id: int, *, razão = None):
+    async def unban(self, ctx, id: int, *, motivo = None):
 
-        l1 = self.bot.get_channel(950170587681128468)
+        l1 = self.bot.get_channel(configData['logs']['mod'])
 
-        if razão == None:
+        if motivo == None:
 
-            razão = 'Não informado'
-
-        else:
-
-            razão = razão
+            motivo = 'Não informado'
 
         e = discord.Embed(title = 'UnBan',
 
-        description = f'Quem desbaniu: {ctx.author}\n quem foi desbanido: <@{id}> \nrazão: {razão}')
+        description = f'Quem desbaniu: {ctx.author}\n quem foi desbanido: <@{id}> \nrazão: {motivo}')
 
         user = await self.bot.fetch_user(id)
 
@@ -186,32 +186,59 @@ class Mod(commands.Cog):
         await ctx.response.send_message(f'{id} desbanido com sucesso')
 
     @discord.slash_command(name = 'say', description = 'Envia uma mensagem em um chat')
-    async def say(self, ctx, channel: discord.TextChannel = None, *, msg = None):
+    @discord.option(name = 'canal', description = 'Escolha o canal que falar')
+    @discord.option(name = 'mensagem', description = 'Escreva oq deseja que eu fale')
+    async def say(self, ctx, canal: discord.TextChannel = None, *, mensagem = None):
 
-        if channel == None:
-            await ctx.response.send_message('Você precisa escolher o chat para enviar a embed')
+        if mensagem == None:
 
-        if msg == None:
-            await ctx.response.send_message('Você precisa escrever algo para enviar')
+            await ctx.respond('Você precisa escrever algo para enviar')
+
+            return
+
+        if canal == None:
+
+            await ctx.send(mensagem)
+
+        else:
+
+            channel2 = self.bot.get_channel(canal.id)
+
+            await channel2.send(mensagem)
 
 
-        channel2 = self.bot.get_channel(channel.id)
+    @discord.slash_command(name = 'ausente', description = 'Te coloca em estado de stand-by')
+    @discord.option(name = 'motivo', description = 'Escreva o motivo deestar ausente')
+    async def standby(self, ctx, *, motivo = None):
 
+        data_e_hora_atuais = datetime.now()
+        fuso_horario = timezone('America/Sao_Paulo')
+        data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
+        dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
 
-        await channel2.send(msg)
+        if motivo == None:
 
-    @discord.slash_command(name = 'standby', description = 'Te coloca em estado de stand-by')
-    async def sandby(self, ctx, *, motivo):
+            motivo = 'Não informado'
 
         role = discord.utils.get(ctx.guild.roles, id = configData['roles']['standby'])
+
+        channel = self.bot.get_channel(configData['chats']['ausencia'])
 
         if role in ctx.author.roles:
             
             await ctx.author.remove_roles(role, reason = motivo)
 
+            await ctx.respond('Você não está mais ausente agora', ephemeral = True)
+
+            await channel.send(f'{ctx.author.name} Saiu da ausencia às {dt}')
+
         else:
 
             await ctx.author.add_roles(role, reason = motivo)
+
+            await ctx.respond('Você está ausente agora', ephemeral = True)
+
+            await channel.send(f'{ctx.author.name} entrou em ausencia às {dt}\nMotivo: {motivo}')
 
 
 async def tck(self):

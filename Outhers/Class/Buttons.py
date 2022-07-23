@@ -148,7 +148,7 @@ class ticket(discord.ui.View):
         
         else:
 
-            await interaction.response.send_message('Ticket já existente, encerre o ultimo para criar outro', ephemeral = True)
+            await interaction.send_message('Ticket já existente, encerre o ultimo para criar outro', ephemeral = True)
 
 class kick(discord.ui.View):
     
@@ -178,7 +178,9 @@ class kick(discord.ui.View):
 
         await l1.send(embed = E)
 
-        await interaction.response.send_message(f'{self.membro.name} expulso com sucesso', ephemeral = True)
+        await interaction.message.delete()
+
+        await interaction.send_message(f'{self.membro.name} expulso com sucesso', ephemeral = True)
 
         await guild.kick(user = self.membro ,reason = self.motivo)
 
@@ -189,8 +191,10 @@ class kick(discord.ui.View):
 
         if interaction.user.id != self.ctx.author.id:
             return
+        
+        await interaction.message.delete()
 
-        await interaction.response.send_message(f'Ufa, ainda bem que não tive que expulsar o {self.membro.mention}')
+        await interaction.send_message(f'Ufa, ainda bem que não tive que expulsar o {self.membro.mention}')
 
         self.stop()
 
@@ -222,6 +226,8 @@ class ban(discord.ui.View):
 
         await l1.send(embed = E)
 
+        await interaction.message.delete()
+
         await interaction.response.send_message(f'{self.membro.name} banido com sucesso', ephemeral = True)
 
         await guild.ban(user = self.membro ,reason = self.motivo)
@@ -233,6 +239,8 @@ class ban(discord.ui.View):
 
         if interaction.user.id != self.ctx.author.id:
             return
+
+        await interaction.message.delete()
 
         await interaction.response.send_message(f'Ufa, ainda bem que não tive que banir o {self.membro.mention}')
 
@@ -268,9 +276,11 @@ class banid(discord.ui.View):
 
         await l1.send(embed = E)
 
+        await interaction.message.delete()
+
         await interaction.response.send_message(f'{self.membro.name} banido com sucesso', ephemeral = True)
 
-        await guild.ban(user = self.membro ,reason = self.motivo)
+        await guild.ban(user = member1 ,reason = self.motivo)
 
         self.stop()
 
@@ -279,6 +289,8 @@ class banid(discord.ui.View):
 
         if interaction.user.id != self.ctx.author.id:
             return
+
+        await interaction.message.delete()
 
         await interaction.response.send_message(f'Ufa, ainda bem que não tive que banir o {self.membro.mention}')
 
