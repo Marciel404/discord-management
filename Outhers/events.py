@@ -145,7 +145,50 @@ class events(commands.Cog):
 
         channel = self.bot.get_channel(configData['logs']['call'])
 
-        if after.self_deaf:
+        if before.channel != after.channel:
+
+            if before.channel == None:
+
+                e = discord.Embed(
+
+                description = f'{member.mention} entrou no chat {after.channel}'
+
+                )
+                e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+
+                e.set_footer(text = f'生 HAYLENG 死 às {dt}')
+
+                await channel.send(embed = e)
+
+                return
+            
+            elif after.channel == None:
+
+                e = discord.Embed(
+
+                description = f'{member.mention} saiu do chat {before.channel}'
+
+                )
+                e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+
+                e.set_footer(text = f'生 HAYLENG 死 às {dt}')
+
+                await channel.send(embed = e)
+
+                return
+
+            e = discord.Embed(
+
+            description = f'{member.mention} se moveu do {before.channel} para {after.channel}'
+
+            )
+            e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+
+            e.set_footer(text = f'生 HAYLENG 死 às {dt}')
+
+            await channel.send(embed = e)
+
+        elif after.self_deaf:
 
             e = discord.Embed(
 
@@ -158,6 +201,8 @@ class events(commands.Cog):
             await channel.send(embed = e)
         
         elif before.self_deaf:
+
+
 
             e = discord.Embed(
 
@@ -283,49 +328,6 @@ class events(commands.Cog):
 
             description = f'{member.mention} mutado no {after.channel}')
 
-            e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
-
-            e.set_footer(text = f'生 HAYLENG 死 às {dt}')
-
-            await channel.send(embed = e)
-
-        elif before.channel != after.channel:
-
-            if before.channel == None:
-
-                e = discord.Embed(
-
-                description = f'{member.mention} entrou no chat {after.channel}'
-
-                )
-                e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
-
-                e.set_footer(text = f'生 HAYLENG 死 às {dt}')
-
-                await channel.send(embed = e)
-
-                return
-            
-            elif after.channel == None:
-
-                e = discord.Embed(
-
-                description = f'{member.mention} saiu do chat {before.channel}'
-
-                )
-                e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
-
-                e.set_footer(text = f'生 HAYLENG 死 às {dt}')
-
-                await channel.send(embed = e)
-
-                return
-
-            e = discord.Embed(
-
-            description = f'{member.mention} se moveu do {before.channel} para {after.channel}'
-
-            )
             e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
