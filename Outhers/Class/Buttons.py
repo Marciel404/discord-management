@@ -16,11 +16,11 @@ class adonticket2(discord.ui.View):
 
         guild = interaction.guild
 
-        admin = discord.utils.get(guild.roles, id = configData['roles']['admin'])
+        admin = discord.utils.get(guild.roles, id = configData['roles']['staff']['admin'])
             
-        mod = discord.utils.get(guild.roles, id = configData['roles']['mod'])
+        mod = discord.utils.get(guild.roles, id = configData['roles']['staff']['mod'])
 
-        submod = discord.utils.get(guild.roles, id = configData['roles']['submod'])
+        submod = discord.utils.get(guild.roles, id = configData['roles']['staff']['submod'])
 
         overwrites = {
 
@@ -69,11 +69,11 @@ class adonticket(discord.ui.View):
 
         guild = interaction.guild
 
-        admin = discord.utils.get(guild.roles, id = configData['roles']['admin'])
+        admin = discord.utils.get(guild.roles, id = configData['roles']['staff']['admin'])
             
-        mod = discord.utils.get(guild.roles, id = configData['roles']['mod'])
+        mod = discord.utils.get(guild.roles, id = configData['roles']['staff']['mod'])
 
-        submod = discord.utils.get(guild.roles, id = configData['roles']['submod'])
+        submod = discord.utils.get(guild.roles, id = configData['roles']['staff']['submod'])
 
         overwrites = {
 
@@ -118,11 +118,11 @@ class ticket(discord.ui.View):
 
             member = interaction.user
 
-            admin = discord.utils.get(guild.roles, id = configData['roles']['admin'])
+            admin = discord.utils.get(guild.roles, id = configData['roles']['staff']['admin'])
             
-            mod = discord.utils.get(guild.roles, id = configData['roles']['mod'])
+            mod = discord.utils.get(guild.roles, id = configData['roles']['staff']['mod'])
 
-            submod = discord.utils.get(guild.roles, id = configData['roles']['submod'])
+            submod = discord.utils.get(guild.roles, id = configData['roles']['staff']['submod'])
 
             overwrites = {
 

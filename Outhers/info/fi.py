@@ -7,6 +7,7 @@ from discord.ext import commands
 from pytz import timezone
 from datetime import datetime
 from discord.ext import commands
+from pymongo import MongoClient
 
 data_e_hora_atuais = datetime.now()
 fuso_horario = timezone('America/Sao_Paulo')

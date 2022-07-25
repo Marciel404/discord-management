@@ -10,6 +10,8 @@ class events(commands.Cog):
 
         await tck(self)
 
+        await self.bot.change_presence(status=discord.Status.idle)
+
         print(f'EU entrei como {self.bot.user}')
 
         print(discord.__version__)
@@ -43,7 +45,7 @@ class events(commands.Cog):
 
         e.add_field(name = 'Nova:', value =  f'{depois.content}', inline=False)
 
-        e.set_author(name = antes.author.name, icon_url = antes.author.avatar, url = antes.author.avatar)
+        e.set_author(name = f'{antes.author.name}#{antes.author.discriminator}', icon_url = antes.author.display_avatar)
 
         e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
@@ -61,7 +63,7 @@ class events(commands.Cog):
         )
         e.add_field(name = 'Mensagem:', value = f'{message.content}', inline=False)
 
-        e.set_author(name = message.author.name, icon_url = message.author.avatar, url = message.author.avatar)
+        e.set_author(name = f'{message.author.name}#{message.author.discriminator}', icon_url = message.author.display_avatar)
 
         e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
@@ -76,69 +78,37 @@ class events(commands.Cog):
             e = discord.Embed(
 
             description = f'{antes.mention} editou o nick'
+            
         )
             e.add_field(name = 'Nome antigo:', value = f'{antes.display_name}', inline=False)
 
             e.add_field(name = 'Nome novo:', value =  f'{depois.display_name}', inline=False)
 
-            e.set_author(name = antes.name, icon_url = antes.avatar, url = antes.avatar)
+            e.set_author(name = f'{antes.name}#{antes.discriminator}', icon_url = antes.display_avatar)
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
             await channel.send(embed = e)
-
-        if antes.avatar != depois.avatar:
-
-            e = discord.Embed(
-
-            description = f'{antes.mention} Trocou de foto\nFoto antiga')
-
-            e.set_author(name = antes.name, icon_url = antes.avatar, url = antes.avatar)
-
-            e.set_footer(text = f'生 HAYLENG 死 às {dt}')
-            
-            e.set_image(antes.display_avatar)
-
-            e2 = discord.Embed(
-
-            description = f'{antes.mention} Trocou de foto\nFoto Nova')
-
-            e2.set_author(name = antes.name, icon_url = antes.avatar, url = antes.avatar)
-
-            e2.set_footer(text = f'生 HAYLENG 死 às {dt}')
-
-            e2.set_image(depois.display_avatar)
-
-            await channel.send(embeds = [e,e2])
 
     @commands.Cog.listener()
     async def on_user_update(self, antes:discord.User, depois:discord.User):
 
         channel = self.bot.get_channel(configData['logs']['membros'])
 
-        if antes.avatar != depois.avatar:
-
+        if antes.nick != depois.nick:
             e = discord.Embed(
 
-            description = f'{antes.mention} Trocou de foto\nFoto antiga')
+            description = f'{antes.mention} editou o nick'
+        )
+            e.add_field(name = 'Nome antigo:', value = f'{antes.display_name}', inline=False)
 
-            e.set_author(name = antes.name, icon_url = antes.avatar, url = antes.avatar)
+            e.add_field(name = 'Nome novo:', value =  f'{depois.display_name}', inline=False)
+
+            e.set_author(name = f'{antes.name}#{antes.discriminator}', icon_url = antes.display_avatar)
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
-            
-            e.set_image(antes.display_avatar)
 
-            e2 = discord.Embed(
-
-            description = f'{antes.mention} Trocou de foto\nFoto Nova')
-
-            e2.set_author(name = antes.name, icon_url = antes.avatar, url = antes.avatar)
-
-            e2.set_footer(text = f'生 HAYLENG 死 às {dt}')
-
-            e2.set_image(depois.display_avatar)
-
-            await channel.send(embeds = [e,e2])
+            await channel.send(embed = e)
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member:discord.Member, before:discord.VoiceState, after:discord.VoiceState):
@@ -151,10 +121,12 @@ class events(commands.Cog):
 
                 e = discord.Embed(
 
-                description = f'{member.mention} entrou no chat {after.channel}'
+                description = f'{member.mention} entrou no chat `{after.channel}`',
+
+                color = 0x00ff19
 
                 )
-                e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+                e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
 
                 e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
@@ -166,10 +138,12 @@ class events(commands.Cog):
 
                 e = discord.Embed(
 
-                description = f'{member.mention} saiu do chat {before.channel}'
+                description = f'{member.mention} saiu do chat `{before.channel}`',
+
+                color = 0xff0000
 
                 )
-                e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+                e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
 
                 e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
@@ -179,10 +153,12 @@ class events(commands.Cog):
 
             e = discord.Embed(
 
-            description = f'{member.mention} se moveu do {before.channel} para {after.channel}'
+            description = f'{member.mention} se moveu do `{before.channel}` para `{after.channel}`',
+
+            color = 0xfff000
 
             )
-            e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+            e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
@@ -192,9 +168,9 @@ class events(commands.Cog):
 
             e = discord.Embed(
 
-            description = f'{member.mention} mutou o fone no {after.channel}')
+            description = f'{member.mention} mutou o fone no `{after.channel}`')
 
-            e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+            e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
@@ -202,13 +178,11 @@ class events(commands.Cog):
         
         elif before.self_deaf:
 
-
-
             e = discord.Embed(
 
-            description = f'{member.mention} desmutou o fone no {after.channel}')
+            description = f'{member.mention} desmutou o fone no `{after.channel}`')
 
-            e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+            e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
@@ -218,9 +192,9 @@ class events(commands.Cog):
 
             e = discord.Embed(
 
-            description = f'{member.mention} desmutou o microfone no {after.channel}')
+            description = f'{member.mention} desmutou o microfone no `{after.channel}`')
 
-            e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+            e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
@@ -230,9 +204,9 @@ class events(commands.Cog):
 
             e = discord.Embed(
 
-            description = f'{member.mention} mutou o microfone no {after.channel}')
+            description = f'{member.mention} mutou o microfone no `{after.channel}`')
 
-            e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+            e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
@@ -242,9 +216,9 @@ class events(commands.Cog):
 
             e = discord.Embed(
 
-            description = f'{member.mention} ativou o video no {after.channel}')
+            description = f'{member.mention} ativou o video no `{after.channel}`')
 
-            e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+            e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
@@ -254,9 +228,9 @@ class events(commands.Cog):
 
             e = discord.Embed(
 
-            description = f'{member.mention} desativou o video no {after.channel}')
+            description = f'{member.mention} desativou o video no `{after.channel}`')
 
-            e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+            e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
@@ -266,9 +240,9 @@ class events(commands.Cog):
 
             e = discord.Embed(
 
-            description = f'{member.mention} começou a transmitir no {after.channel}')
+            description = f'{member.mention} começou a transmitir no `{after.channel}`')
 
-            e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+            e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
@@ -278,9 +252,9 @@ class events(commands.Cog):
 
             e = discord.Embed(
 
-            description = f'{member.mention} parou de transmitir no {after.channel}')
+            description = f'{member.mention} parou de transmitir no `{after.channel}`')
 
-            e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+            e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
@@ -290,9 +264,9 @@ class events(commands.Cog):
 
             e = discord.Embed(
 
-            description = f'{member.mention} foi ensurdecido no {after.channel}')
+            description = f'{member.mention} foi ensurdecido no `{after.channel}`')
 
-            e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+            e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
@@ -302,9 +276,9 @@ class events(commands.Cog):
 
             e = discord.Embed(
 
-            description = f'{member.mention} foi desensurdecido no {after.channel}')
+            description = f'{member.mention} foi desensurdecido no `{after.channel}`')
 
-            e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+            e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
@@ -314,9 +288,9 @@ class events(commands.Cog):
 
             e = discord.Embed(
 
-            description = f'{member.mention} foi desmutado no {after.channel}')
+            description = f'{member.mention} foi desmutado no `{after.channel}`')
 
-            e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+            e.set_author(name = f'{member.name}#{member.discriminator}' , icon_url = member.display_avatar)
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
@@ -326,9 +300,9 @@ class events(commands.Cog):
 
             e = discord.Embed(
 
-            description = f'{member.mention} mutado no {after.channel}')
+            description = f'{member.mention} mutado no `{after.channel}`')
 
-            e.set_author(name = member.name, icon_url = member.avatar, url = member.avatar)
+            e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 

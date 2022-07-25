@@ -1,5 +1,6 @@
 from Outhers.info.fi import *
 from Outhers.Class.Buttons import *
+from Outhers.db.mod import *
 
 class Mod(commands.Cog):
     def __init__(self, bot:commands.Bot):
@@ -165,7 +166,7 @@ class Mod(commands.Cog):
     @discord.option(name = 'motivo', description = 'Escreva o motivo de Banir')
     @commands.bot_has_permissions(ban_members = True)
     @commands.has_permissions(ban_members = True)
-    async def unban(self, ctx, id: int, *, motivo = None):
+    async def unban(self, ctx, id, *, motivo = None):
 
         l1 = self.bot.get_channel(configData['logs']['mod'])
 
@@ -177,13 +178,13 @@ class Mod(commands.Cog):
 
         description = f'Quem desbaniu: {ctx.author}\n quem foi desbanido: <@{id}> \nrazão: {motivo}')
 
+        await l1.send(embed = e)
+
         user = await self.bot.fetch_user(id)
 
         await ctx.guild.unban(user)
 
-        await l1.response.send_message(embed = e)
-
-        await ctx.response.send_message(f'{id} desbanido com sucesso')
+        await ctx.respond(f'{id} desbanido com sucesso')
 
     @discord.slash_command(name = 'say', description = 'Envia uma mensagem em um chat')
     @discord.option(name = 'canal', description = 'Escolha o canal que falar')
@@ -208,7 +209,7 @@ class Mod(commands.Cog):
 
 
     @discord.slash_command(name = 'ausente', description = 'Te coloca em estado de stand-by')
-    @discord.option(name = 'motivo', description = 'Escreva o motivo deestar ausente')
+    @discord.option(name = 'motivo', description = 'Escreva o motivo de estar ausente')
     async def standby(self, ctx, *, motivo = None):
 
         data_e_hora_atuais = datetime.now()
@@ -220,7 +221,7 @@ class Mod(commands.Cog):
 
             motivo = 'Não informado'
 
-        role = discord.utils.get(ctx.guild.roles, id = configData['roles']['standby'])
+        role = discord.utils.get(ctx.guild.roles, id = configData['roles']['outras']['standby'])
 
         channel = self.bot.get_channel(configData['chats']['ausencia'])
 
@@ -240,17 +241,209 @@ class Mod(commands.Cog):
 
             await channel.send(f'{ctx.author.name} entrou em ausencia às {dt}\nMotivo: {motivo}')
 
+    @discord.slash_command(name = 'advertencia', description = 'Da advertencia para um membro')
+    @discord.option(name = 'membro', description = 'Escolha o membro a ser advertido')
+    @discord.option(name = 'motivo', description = 'Escreva o motivo da advertencia')
+    async def adv(self, ctx, membro: discord.Member, *, motivo = None):
+
+
+        if motivo == None:
+
+            motivo = 'Não informado'
+
+        role1 = discord.utils.get(ctx.guild.roles, id = configData['roles']['adv']['adv1'])
+
+        role2 = discord.utils.get(ctx.guild.roles, id = configData['roles']['adv']['adv2'])
+
+        role3 = discord.utils.get(ctx.guild.roles, id = configData['roles']['adv']['adv3'])
+
+        mute = discord.utils.get(ctx.guild.roles, id = configData['roles']['outras']['mute'])
+
+        channel = self.bot.get_channel(configData['logs']['mod'])
+
+        if role3 in membro.roles:
+
+            E = discord.Embed(title = 'Ban', description = f'Pessoa banida: {membro.name} \n Quem baniu: {ctx.author.mention} \n motivo: Acumulo de adv')
+
+            await channel.send(embed = E)
+
+            await membro.ban(reason = 'Acumulo de advertencia')
+
+            await ctx.respond('Membro advertido com sucesso e banido devido o acumulo de adv', ephemeral = True)
+
+
+        if role2 in membro.roles:
+
+            e = discord.Embed(title = 'Advertencia 3', description = f'{membro.mention} foi advertido por {ctx.author.mention}\nMotivo:{motivo}')
+            
+            await advdb(membro,3,motivo)
+
+            await membro.add_roles(role3, reason = motivo)
+            await membro.add_roles(mute, reason = 'Adv3')
+
+            await channel.send(embed = e)
+
+            await asyncio.sleep(86400)
+
+            await membro.remove_roles(mute)
+
+            return
+
+
+        if role1 in membro.roles:
+
+            e = discord.Embed(title = 'Advertencia 2', description = f'{membro.mention} foi advertido por {ctx.author.mention}\nMotivo:{motivo}')
+            
+            await advdb(membro,2,motivo)
+
+            await membro.add_roles(role2, reason = motivo)
+            await membro.add_roles(mute, reason = 'Adv2')
+
+            await channel.send(embed = e)
+
+            await ctx.respond('Membro advertido com sucesso', ephemeral = True)
+
+            await asyncio.sleep(10800)
+
+            await membro.remove_roles(mute)
+
+            return
+
+        if role1 not in membro.roles:
+
+            e = discord.Embed(title = 'Advertencia 1', description = f'{membro.mention} foi advertido por {ctx.author.mention}\nMotivo:{motivo}')
+
+            await advdb(membro,3,'None')
+
+            await advdb(membro,2,'None')
+
+            await advdb(membro,1,motivo)
+            
+            await membro.add_roles(role1, reason = motivo)
+
+            await membro.add_roles(mute, reason = 'Adv1')
+
+            await channel.send(embed = e)
+
+            await ctx.respond('Membro advertido com sucesso', ephemeral = True)
+
+            await asyncio.sleep(3600)
+
+            await membro.remove_roles(mute)
+
+            return
+
+    @discord.slash_command(name = 'rmvadv', description = 'Remove uma advertencia de um membro')
+    @discord.option(name = 'membro', description = 'Escolha o membro a remover a advertencia')
+    async def rmvvadv(self, ctx, membro: discord.Member):
+
+        role1 = discord.utils.get(ctx.guild.roles, id = configData['roles']['adv']['adv1'])
+
+        role2 = discord.utils.get(ctx.guild.roles, id = configData['roles']['adv']['adv2'])
+
+        role3 = discord.utils.get(ctx.guild.roles, id = configData['roles']['adv']['adv3'])
+
+        channel = self.bot.get_channel(configData['logs']['mod'])
+
+        e = discord.Embed(title = 'Remoção adv', description = f'{ctx.author.mention} removeu uma advertencia de {membro.mention}')
+
+        if role3 in membro.roles:
+            
+            await rmvadvdb(membro,3, 'None')
+
+            await membro.remove_roles(role3)
+
+            await channel.send(embed = e)
+
+            await ctx.respond('Advertencia removida com sucesso', ephemeral = True)
+
+            return
+
+        elif role2 in membro.roles:
+            
+            await rmvadvdb(membro,2,'None')
+
+            await membro.remove_roles(role2)
+
+            await channel.send(embed = e)
+
+            await ctx.respond('Advertencia removida com sucesso', ephemeral = True)
+
+            return
+
+        elif role1 in membro.roles:
+
+            await rmvadvdb(membro,1,'None')
+            
+            await membro.remove_roles(role1)
+
+            await channel.send(embed = e)
+
+            await ctx.respond('Advertencia removida com sucesso', ephemeral = True)
+
+            return
+
+    @discord.slash_command(name = 'veradv', description = 'Envia as advs de um membro')
+    @discord.option(name = 'membro', description = 'Escolha o membro a remover a advertencia')
+    async def veradv(self, ctx, membro: discord.Member):
+
+        myquery = { "_id": membro.id}
+        if (mute.count_documents(myquery) == 0):
+
+            await advdb(membro,3,'None')
+
+            await advdb(membro,2,'None')
+
+            await advdb(membro,1,'None')
+
+        adv = mute.find_one({"_id": membro.id})
+
+        adv1 = adv['Adv1']
+
+        adv2 = adv['Adv2']
+
+        adv3 = adv['Adv3']
+
+        if adv1 == 'None':
+
+            await ctx.respond('Esse membro não Possui advertencia', ephemeral = True)
+
+        if adv3 != 'None':
+            e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}\nAdv2: {adv2}\nAdv3: {adv3}')
+
+            await ctx.respond(embed = e, ephemeral = True)
+
+            return
+
+        if adv2 != 'None':
+            e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}\nAdv2: {adv2}')
+
+            await ctx.respond(embed = e, ephemeral = True)
+
+            return
+        
+        if adv1 != 'None':
+            e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}')
+
+            await ctx.respond(embed = e, ephemeral = True)
+
+            return
 
 async def tck(self):
 
     guild = self.bot.get_guild(configData["guild"])
 
     e = discord.Embed(
-    title = 'Precisa de ajuda? Reaja a 🛎 para abrir um ticket',  
+
+    title = 'Precisa de ajuda? Reaja a 🛎 para abrir um ticket',
+
     description = 'Com os tickets você pode reportar algo ou tirar alguma dúvida.',
+
     color = 0x4B0082)
+
     e.set_footer(text = 'Staff Hayleng', icon_url = guild.icon)
-    e.set_image(url = 'https://media.discordapp.net/attachments/793256675229564948/1000150688900325569/standard_gif_suporte.gif')
+    
+    e.set_image(url = 'https://media.giphy.com/media/sKezAGnlMZmLnwXwP8/giphy.gif')
 
     channel = self.bot.get_channel(configData['chats']['ticket'])
 
