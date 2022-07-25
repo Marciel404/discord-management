@@ -1,42 +1,66 @@
 {
+  
+  "token": "token bot here",
 
-  "token": "token here",
+  "guild": id do server,
 
   "prefix": "h!",
-
-  "guild": 929181582571503658,
   
   "roles":{
 
-    "admin": 1000397264692461659,
+    "staff": {
+      "admin": id do cargo de adm,
 
-    "mod": 1000397273739563032,
+      "mod": id do cargo de mod,
 
-    "submod": 1000397274544881694,
+      "submod": id do cargo de submod,
 
-    "staff": 1000397275702497340,
+      "staff": id do cargo de staff
+    },
 
-    "orgeventos":  1000397281163481188 ,
+    "eventos":{
 
-    "apresentator": 1000397281582923857,
+      "orgeventos":  id do cargo de organizador de eventos,
 
-    "standby": 1000397272930066512
+      "apresentator": id do cargo de apresentador
+    },
+
+    "adv": {
+
+      "adv1": id do cargo de advertencia31,
+
+      "adv2": id do cargo de advertencia2,
+
+      "adv3": id do cargo de advertencia3
+
+    },
+
+    "outras":{
+
+      "standby": id do cargo de ausencia,
+
+      "verificado": id do cargo de verificado,
+
+      "mute": id do cargo de mute
+
+    }
+
   },
   "logs":{
 
-      "chat": 1000397434549190666,
+      "chat": id canal de logs de chats,
 
-      "call": 1000397435790696479,
+      "call": id canal de logs de calls,
 
-      "mod": 1000397436977684581,
+      "mod": id canal de logs de moderação,
 
-      "membros": 1000397438248566894
+      "membros": id canal de logs de membros
   },
   "chats":{
 
-    "ticket": 1000397359227863091,
+    "ticket": id canal ticket,
 
-    "ausencia": 1000487672906788995
+    "ausencia": id canal ausencia
 
   }
 }
