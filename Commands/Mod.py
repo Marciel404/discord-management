@@ -217,29 +217,36 @@ class Mod(commands.Cog):
         data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
         dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
 
-        if motivo == None:
-
-            motivo = 'Não informado'
-
         role = discord.utils.get(ctx.guild.roles, id = configData['roles']['outras']['standby'])
 
         channel = self.bot.get_channel(configData['chats']['ausencia'])
 
+        if role not in ctx.author.roles:
+
+            if motivo == None:
+
+                await ctx.respond('Você precisa justificar a ausencia', ephemeral = True)
+
+                return
+
+            await ctx.author.add_roles(role)
+
+            await ctx.respond('Você está ausente agora', ephemeral = True)
+
+            await channel.send(f'{ctx.author.name} entrou em ausencia às {dt}\nMotivo: {motivo}')
+
+            return
+
         if role in ctx.author.roles:
-            
-            await ctx.author.remove_roles(role, reason = motivo)
+
+            await ctx.author.remove_roles(role)
 
             await ctx.respond('Você não está mais ausente agora', ephemeral = True)
 
             await channel.send(f'{ctx.author.name} Saiu da ausencia às {dt}')
 
-        else:
+            return
 
-            await ctx.author.add_roles(role, reason = motivo)
-
-            await ctx.respond('Você está ausente agora', ephemeral = True)
-
-            await channel.send(f'{ctx.author.name} entrou em ausencia às {dt}\nMotivo: {motivo}')
 
     @discord.slash_command(name = 'advertencia', description = 'Da advertencia para um membro')
     @discord.option(name = 'membro', description = 'Escolha o membro a ser advertido')

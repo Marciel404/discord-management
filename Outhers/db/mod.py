@@ -1,6 +1,6 @@
 from Outhers.info.fi import *
 
-cluster = MongoClient('mongo key connect')
+cluster = MongoClient('mongodb+srv://Marciel:açucar@markuus.c1awv.mongodb.net/test?')
 
 db = cluster['HYG']
 

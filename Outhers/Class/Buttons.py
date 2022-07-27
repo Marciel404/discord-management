@@ -138,7 +138,9 @@ class ticket(discord.ui.View):
 
                 }
 
-            channel = await guild.create_text_channel(name=ticket, overwrites = overwrites)
+            channel = await guild.create_text_channel(name=ticket, 
+            overwrites = overwrites, 
+            category = discord.utils.get(interaction.guild.categories, id = configData['catego']['ticket']))
 
             await interaction.response.send_message('Ticket criado com sucesso', ephemeral = True)
 

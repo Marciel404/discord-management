@@ -114,11 +114,42 @@ class events(commands.Cog):
     async def on_voice_state_update(self, member:discord.Member, before:discord.VoiceState, after:discord.VoiceState):
 
         channel = self.bot.get_channel(configData['logs']['call'])
+        
+        guild = member.guild
 
         if before.channel != after.channel:
 
             if before.channel == None:
 
+                if after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['ntb']) in member.roles \
+                or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['nv100']) in member.roles\
+                or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['staff']['staff']) in member.roles:
+                
+                    role1 = discord.utils.get(member.guild.roles, id = configData['roles']['outras']['callpv'])
+
+                    await member.add_roles(role1)
+
+                    overwrites = {
+
+                        guild.default_role: discord.PermissionOverwrite(connect=False),
+
+                        member: discord.PermissionOverwrite(connect = True)
+                    
+                    }
+
+                    await guild._create_channel(name = f'Call Privada de {member.display_name}',  
+                    channel_type = discord.ChannelType.voice, 
+                    category = discord.utils.get(member.guild.categories, id = configData['catego']['callpv']),
+                    overwrites = overwrites)
+
+                    call = discord.utils.get(member.guild.channels, name = f'Call Privada de {member.display_name}')
+
+                    await asyncio.sleep(1)
+
+                    await member.move_to(call)
+
+                    return
+                    
                 e = discord.Embed(
 
                 description = f'{member.mention} entrou no chat `{after.channel}`',
@@ -133,8 +164,20 @@ class events(commands.Cog):
                 await channel.send(embed = e)
 
                 return
+
+            call = discord.utils.get(member.guild.channels, name = f'Call Privada de {member.display_name}')
+
+            if before.channel == call:
+
+                role1 = discord.utils.get(member.guild.roles, id = configData['roles']['outras']['callpv'])
+
+                await member.remove_roles(role1)
+
+                await before.channel.delete()
             
-            elif after.channel == None:
+            if after.channel == None:
+
+                call = discord.utils.get(member.guild.channels, name = f'Call Privada de {member.display_name}')
 
                 e = discord.Embed(
 
@@ -150,6 +193,33 @@ class events(commands.Cog):
                 await channel.send(embed = e)
 
                 return
+
+            if after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['ntb']) in member.roles \
+                or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['nv100']) in member.roles\
+                or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['staff']['staff']) in member.roles:
+
+                    role1 = discord.utils.get(member.guild.roles, id = configData['roles']['outras']['callpv'])
+
+                    await member.add_roles(role1)
+
+                    overwrites = {
+
+                        guild.default_role: discord.PermissionOverwrite(connect=False),
+
+                        member: discord.PermissionOverwrite(connect = True)
+                    
+                    }
+
+                    await guild._create_channel(name = f'Call Privada de {member.display_name}',  
+                    channel_type = discord.ChannelType.voice, 
+                    category = discord.utils.get(member.guild.categories, id = 1000788986844958751),
+                    overwrites = overwrites)
+
+                    await asyncio.sleep(1)
+
+                    await member.move_to(call)
+
+                    return
 
             e = discord.Embed(
 
