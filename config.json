@@ -1,66 +1,83 @@
 {
   
-  "token": "token bot here",
+  "token": ,
 
-  "guild": id do server,
+  "guild": ,
 
-  "prefix": "h!",
+  "prefix": ,
   
   "roles":{
 
     "staff": {
-      "admin": id do cargo de adm,
+      "admin": ,
 
-      "mod": id do cargo de mod,
+      "mod": ,
 
-      "submod": id do cargo de submod,
+      "submod": ,
 
-      "staff": id do cargo de staff
+      "staff": 
     },
 
-    "eventos":{
+    "eventos": {
 
-      "orgeventos":  id do cargo de organizador de eventos,
+      "orgeventos":  ,
 
-      "apresentator": id do cargo de apresentador
+      "apresentator": 
     },
 
     "adv": {
 
-      "adv1": id do cargo de advertencia31,
+      "adv1": ,
 
-      "adv2": id do cargo de advertencia2,
+      "adv2": ,
 
-      "adv3": id do cargo de advertencia3
+      "adv3": 
 
     },
 
-    "outras":{
+    "outras": {
 
-      "standby": id do cargo de ausencia,
+      "standby": ,
 
-      "verificado": id do cargo de verificado,
+      "verificado": ,
 
-      "mute": id do cargo de mute
+      "mute": ,
+
+      "ntb": ,
+
+      "nv100": ,
+
+      "callpv": 
 
     }
 
   },
-  "logs":{
+  "logs": {
 
-      "chat": id canal de logs de chats,
+      "chat": ,
 
-      "call": id canal de logs de calls,
+      "call": ,
 
-      "mod": id canal de logs de moderação,
+      "mod": ,
 
-      "membros": id canal de logs de membros
+      "membros": 
   },
-  "chats":{
+  "chats": {
 
-    "ticket": id canal ticket,
+    "ticket": ,
 
-    "ausencia": id canal ausencia
+    "ausencia": 
+
+  },
+  "catego":{
+
+    "callpv": ,
+
+    "ticket": 
+  },
+  "calls": {
+
+    "espera": 
 
   }
 }
