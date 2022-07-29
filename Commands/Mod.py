@@ -16,10 +16,6 @@ class Mod(commands.Cog):
     membro: discord.Member = None, 
     *,motivo=None):
 
-        user = self.bot.get_user(int(id)).mutual_guilds()
-        
-
-
         if motivo == None:
 
             motivo = 'Motivo não informado'
