@@ -2,6 +2,7 @@ import discord
 import os
 import json
 import aiohttp
+import asyncio
 
 from discord.ext import commands
 from pytz import timezone

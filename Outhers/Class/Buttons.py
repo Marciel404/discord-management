@@ -1,5 +1,217 @@
 import discord, asyncio
-from Outhers.info.fi import configData
+from discord.ext import commands
+from Outhers.info.fi import configData, dt
+from Outhers.db.mod import *
+
+class adv(discord.ui.View):
+
+    def __init__(self, bot, membro, motivo):
+
+        self.motivo = motivo
+
+        self.membro = membro
+
+        self.bot = bot
+
+        super().__init__(timeout = None)
+
+    @discord.ui.button(label = '✅'  , style = discord.ButtonStyle.blurple)
+    async def adv(self, button: discord.ui.Button, interaction: discord.Interaction):
+
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
+
+            role1 = discord.utils.get(interaction.guild.roles, id = configData['roles']['adv']['adv1'])
+
+            role2 = discord.utils.get(interaction.guild.roles, id = configData['roles']['adv']['adv2'])
+
+            role3 = discord.utils.get(interaction.guild.roles, id = configData['roles']['adv']['adv3'])
+
+            mute = discord.utils.get(interaction.guild.roles, id = configData['roles']['outras']['mute'])
+
+            channel = self.bot.get_channel(configData['logs']['mod'])
+
+            if role3 in self.membro.roles:
+
+                E = discord.Embed(title = 'Ban', description = f'Pessoa banida: {self.membro.name} \n Quem baniu: {interaction.user.mention} \n motivo: Acumulo de adv')
+
+                await channel.send(embed = E)
+
+                await self.membro.ban(reason = 'Acumulo de advertencia')
+
+                await interaction.message.delete()
+
+                await interaction.response.send_message(f'{self.membro.name} advertido com sucesso e banido devido o acumulo de adv', ephemeral = True)
+
+
+            if role2 in self.membro.roles:
+
+                e = discord.Embed(title = 'Advertencia 3', description = f'{self.membro.mention} foi advertido por {interaction.user.mention}\nMotivo:{self.motivo}')
+                
+                await advdb(self.membro,3,self.motivo)
+
+                await self.membro.add_roles(role3, reason = self.motivo)
+                await self.membro.add_roles(mute, reason = 'Adv3')
+
+                await interaction.message.delete()
+
+                await channel.send(embed = e)
+
+                await asyncio.sleep(86400)
+
+                await self.membro.remove_roles(mute)
+
+                return
+
+            if role1 in self.membro.roles:
+
+                e = discord.Embed(title = 'Advertencia 2', description = f'{self.membro.mention} foi advertido por {interaction.user.mention}\nMotivo:{self.motivo}')
+                
+                await advdb(self.membro,2,self.motivo)
+
+                await self.membro.add_roles(role2, reason = self.motivo)
+                await self.membro.add_roles(mute, reason = 'Adv2')
+
+                await interaction.message.delete()
+
+                await channel.send(embed = e)
+
+                await interaction.response.send_message(f'{self.membro} advertido com sucesso', ephemeral = True)
+
+                await asyncio.sleep(10800)
+
+                await self.membro.remove_roles(mute)
+
+                return
+
+            if role1 not in self.membro.roles:
+
+                e = discord.Embed(title = 'Advertencia 1', description = f'{self.membro.mention} foi advertido por {interaction.user.mention}\nMotivo:{self.motivo}')
+
+                await advdb(self.membro,3,'None')
+
+                await advdb(self.membro,2,'None')
+
+                await advdb(self.membro,1,self.motivo)
+                
+                await self.membro.add_roles(role1, reason = self.motivo)
+
+                await self.membro.add_roles(mute, reason = 'Adv1')
+
+                await interaction.message.delete()
+
+                await channel.send(embed = e)
+
+                await interaction.response.send_message(f'{self.membro} advertido com sucesso', ephemeral = True)
+
+                await asyncio.sleep(3600)
+
+                await self.membro.remove_roles(mute)
+
+                return
+        else:
+
+            await interaction.response.send_message('Você não tem permissoes para isso', ephemeral = True)
+
+    @discord.ui.button(label = '❎', style = discord.ButtonStyle.blurple)
+    async def cancel(self, button: discord.ui.Button, interaction: discord.Interaction):
+
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
+        
+            await interaction.message.delete()
+
+
+            self.stop()
+
+        else:
+
+            await interaction.response.send_message('Você não tem permissoes para isso', ephemeral = True)
+
+class rmvadv(discord.ui.View):
+
+    def __init__(self, bot, membro):
+
+        self.membro = membro
+
+        self.bot = bot
+
+        super().__init__(timeout = None)
+
+    @discord.ui.button(label = '✅'  , style = discord.ButtonStyle.blurple)
+    async def rmvadv(self, button: discord.ui.Button, interaction: discord.Interaction):
+
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
+
+            await interaction.message.delete()
+
+            membro = self.membro
+
+            role1 = discord.utils.get(interaction.guild.roles, id = configData['roles']['adv']['adv1'])
+
+            role2 = discord.utils.get(interaction.guild.roles, id = configData['roles']['adv']['adv2'])
+
+            role3 = discord.utils.get(interaction.guild.roles, id = configData['roles']['adv']['adv3'])
+
+            channel = self.bot.get_channel(configData['logs']['mod'])
+
+            e = discord.Embed(title = 'Remoção adv', description = f'{interaction.user.mention} removeu uma advertencia de {membro.mention}')
+
+            if role3 in membro.roles:
+                
+                await rmvadvdb(membro,3, 'None')
+
+                await membro.remove_roles(role3)
+
+                await channel.send(embed = e)
+
+                await interaction.response.send_message('Advertência removida com sucesso', ephemeral = True)
+
+                return
+
+            elif role2 in membro.roles:
+                
+                await rmvadvdb(membro,2,'None')
+
+                await membro.remove_roles(role2)
+
+                await channel.send(embed = e)
+
+                await interaction.response.send_message('Advertência removida com sucesso', ephemeral = True)
+
+                return
+
+            elif role1 in membro.roles:
+
+                await rmvadvdb(membro,1,'None')
+                
+                await membro.remove_roles(role1)
+
+                await channel.send(embed = e)
+
+                await interaction.response.send_message('Advertência removida com sucesso', ephemeral = True)
+
+                return
+
+            elif discord.utils.get(interaction.guild.roles, id = configData['roles']['adv']['adv1']) not in membro.roles:
+
+                await interaction.response.send_message('Esse membro não possue advertencias', delete_after = 3)
+
+                return
+        else:
+
+            await interaction.response.send_message('Você não tem permissoes para isso', ephemeral = True)
+
+    @discord.ui.button(label = '❎', style = discord.ButtonStyle.blurple)
+    async def cancel(self, button: discord.ui.Button, interaction: discord.Interaction):
+
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
+        
+            await interaction.message.delete()
+
+            self.stop()
+
+        else:
+
+            await interaction.response.send_message('Você não tem permissoes para isso', ephemeral = True)
 
 class adonticket2(discord.ui.View):
 
@@ -169,36 +381,42 @@ class kick(discord.ui.View):
     @discord.ui.button(label = '✅', style = discord.ButtonStyle.blurple)
     async def confirmkick(self, button: discord.ui.Button, interaction: discord.Interaction):
 
-        if interaction.user.id != self.ctx.author.id:
-            return
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
         
-        l1 = self.bot.get_channel(configData['logs']['mod'])
+            l1 = self.bot.get_channel(configData['logs']['mod'])
 
-        guild = interaction.guild
+            guild = interaction.guild
 
-        E = discord.Embed(title = 'kick', description = f'Pessoa expulsa: {self.membro.name} \n Quem expulsou: {interaction.user.mention} \n motivo: {self.motivo}')
+            E = discord.Embed(title = 'kick', description = f'Pessoa expulsa: {self.membro.name} \n Quem expulsou: {self.ctx.mention} \nAprovado por: {interaction.user.mention} \n motivo: {self.motivo} \n{self.membro.id}')
 
-        await l1.send(embed = E)
+            await l1.send(embed = E)
 
-        await interaction.message.delete()
+            await interaction.message.delete()
 
-        await interaction.send_message(f'{self.membro.name} expulso com sucesso', ephemeral = True)
+            await interaction.response.send_message(f'{self.membro.name} expulso com sucesso', ephemeral = True)
 
-        await guild.kick(user = self.membro ,reason = self.motivo)
+            await guild.kick(user = self.membro ,reason = self.motivo)
 
-        self.stop()
+            self.stop()
+
+        else:
+
+            await interaction.response.send_message('Você não tem permissoes para isso', ephemeral = True)
 
     @discord.ui.button(label = '❎', style = discord.ButtonStyle.blurple)
     async def denykick(self, button: discord.ui.Button, interaction: discord.Interaction):
 
-        if interaction.user.id != self.ctx.author.id:
-            return
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
         
-        await interaction.message.delete()
+            await interaction.message.delete()
 
-        await interaction.send_message(f'Ufa, ainda bem que não tive que expulsar o {self.membro.mention}')
+            await interaction.response.send_message(f'Ufa, ainda bem que não tive que expulsar o {self.membro.mention}', ephemeral = True)
 
-        self.stop()
+            self.stop()
+
+        else:
+
+            await interaction.response.send_message('Você não tem permissoes para isso', ephemeral = True)
 
 class ban(discord.ui.View):
     
@@ -212,88 +430,315 @@ class ban(discord.ui.View):
 
         self.ctx = ctx
 
-        super().__init__(timeout = 180)
+        super().__init__(timeout = None)
 
     @discord.ui.button(label = '✅', style = discord.ButtonStyle.blurple)
     async def confirmban(self, button: discord.ui.Button, interaction: discord.Interaction):
 
-        if interaction.user.id != self.ctx.author.id:
-            return
-        
-        l1 = self.bot.get_channel(configData['logs']['mod'])
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
 
-        guild = interaction.guild
+            l1 = self.bot.get_channel(configData['logs']['mod'])
 
-        E = discord.Embed(title = 'Ban', description = f'Pessoa banida: {self.membro.name} \n Quem baniu: {interaction.user.mention} \n motivo: {self.motivo}')
+            guild = interaction.guild
 
-        await l1.send(embed = E)
+            E = discord.Embed(title = 'Ban', description = f'Pessoa banida: {self.membro.name} \nQuem baniu: {self.ctx.mention}\nAprovado por: {interaction.user.mention} \nmotivo: {self.motivo} \nid: {self.membro.id}')
 
-        await interaction.message.delete()
+            await l1.send(embed = E)
 
-        await interaction.response.send_message(f'{self.membro.name} banido com sucesso', ephemeral = True)
+            await interaction.message.delete()
 
-        await guild.ban(user = self.membro ,reason = self.motivo)
+            await interaction.response.send_message(f'{self.membro.name} banido com sucesso', ephemeral = True)
 
-        self.stop()
+            await guild.ban(user = self.membro ,reason = self.motivo)
+
+            self.stop()
+
+        else:
+
+            await interaction.response.send_message('Você não tem permissoes para isso', ephemeral = True)
+
 
     @discord.ui.button(label = '❎', style = discord.ButtonStyle.blurple)
     async def denyban(self, button: discord.ui.Button, interaction: discord.Interaction):
 
-        if interaction.user.id != self.ctx.author.id:
-            return
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
 
-        await interaction.message.delete()
+            await interaction.message.delete()
 
-        await interaction.response.send_message(f'Ufa, ainda bem que não tive que banir o {self.membro.mention}')
+            self.stop()
 
-        self.stop()
+        else:
 
-class banid(discord.ui.View):
+            await interaction.response.send_message('Você não tem permissoes para isso', ephemeral = True)
+
+class cmdstf(discord.ui.View):
     
-    def __init__(self, bot, membro, motivo, ctx):
-
-        self.membro = membro
+    def __init__(self, bot):
 
         self.bot = bot
 
-        self.motivo = motivo
+        super().__init__(timeout = None)
 
-        self.ctx = ctx
+    @discord.ui.button(label = 'Ausencia', style = discord.ButtonStyle.blurple)
+    async def ausente(self, button: discord.ui.Button, interaction: discord.Interaction):
 
-        super().__init__(timeout = 180)
+        def check(m):
+            return m.content and m.author.id == interaction.user.id
 
-    @discord.ui.button(label = '✅', style = discord.ButtonStyle.blurple)
-    async def confirmban(self, button: discord.ui.Button, interaction: discord.Interaction):
+        try:
 
-        if interaction.user.id != self.ctx.author.id:
-            return
+            role = discord.utils.get(interaction.guild.roles, id = configData['roles']['outras']['standby'])
+
+            ausente = self.bot.get_channel(configData['chats']['ausencia'])
+
+            channel = self.bot.get_channel(configData['chats']['cmdstf'])
+
+
+            if role not in interaction.user.roles:
+
+                ausente2 = await channel.send('Escreva o motivo de estar ausente')
+
+                msg = await self.bot.wait_for('message', check = check, timeout = 130)
+
+                await ausente2.delete()
+
+                await interaction.user.add_roles(role)
+
+                await ausente.send(f'{interaction.user.name} entrou em ausencia às {dt}\nMotivo: {msg.content}')
+
+                await channel.send(f'Agora você está asente {interaction.user.mention}', delete_after = 2)
+
+                await msg.delete()
+
+                return
+
+            if role in interaction.user.roles:
+
+                await interaction.user.remove_roles(role)
+
+                await ausente.send(f'{interaction.user.name} Saiu da ausencia às {dt}')
+
+                await channel.send('Você não está mais ausente', delete_after = 2)
+
+                return
         
-        l1 = self.bot.get_channel(configData['logs']['mod'])
+        except Exception:
 
-        member1 = await self.bot.fetch_user(self.membro)
+            await ausente2.delete()
 
-        guild = interaction.guild
+            await ausente.send(f'{interaction.user.name} clicou no ausente mas não fez nada')
 
-        E = discord.Embed(title = 'Ban', description = f'Pessoa banida: {self.membro.name} \n Quem baniu: {interaction.user.mention} \n motivo: {self.motivo}')
+    @discord.ui.button(label = 'Ban', style = discord.ButtonStyle.blurple)
+    async def ban(self, button: discord.ui.Button, interaction: discord.Interaction):
 
-        await l1.send(embed = E)
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['staff']) not in interaction.user.roles:
 
-        await interaction.message.delete()
+            await interaction.response.send_message('Você não tem permissoes para isso', ephemeral = True)
 
-        await interaction.response.send_message(f'{self.membro.name} banido com sucesso', ephemeral = True)
-
-        await guild.ban(user = member1 ,reason = self.motivo)
-
-        self.stop()
-
-    @discord.ui.button(label = '❎', style = discord.ButtonStyle.blurple)
-    async def denyban(self, button: discord.ui.Button, interaction: discord.Interaction):
-
-        if interaction.user.id != self.ctx.author.id:
             return
 
-        await interaction.message.delete()
+        channel = self.bot.get_channel(configData['chats']['cmdstf'])
 
-        await interaction.response.send_message(f'Ufa, ainda bem que não tive que banir o {self.membro.mention}')
+        def check(m):
+            return m.content and m.author.id == interaction.user.id
 
-        self.stop()
+        try:
+
+            id = await channel.send('Mande o id da pessoa a banir')
+
+            msg = await self.bot.wait_for('message', check = check, timeout = 130)
+
+            membro = interaction.guild.get_member(int(msg.content))
+
+            await id.delete()
+
+            await msg.delete()
+
+            def check2(m):
+                return m.content and m.author.id == interaction.user.id
+
+            try:
+
+                id = await channel.send('Mande o motivo de banir o membro')
+
+                msg2 = await self.bot.wait_for('message', check = check2, timeout = 130)
+
+                await id.delete()
+
+                await msg2.delete()
+
+                print(msg2.content)
+
+                e = discord.Embed(title = 'Ban')
+
+                e.add_field(name = 'Pessoa a banir', value = f'{membro.mention}')
+                e.add_field(name = 'Quem baniu', value = interaction.user.mention, inline = False)
+                e.add_field(name = 'Motivo', value = msg2.content)
+
+                await channel.send(embed = e, view = ban(self.bot,membro,msg2.content, interaction.user))
+
+                print(msg.content, msg2.content)
+
+            except:
+                print('error')
+
+        except:
+            print('error')
+
+    @discord.ui.button(label = 'kick', style = discord.ButtonStyle.blurple)
+    async def kick(self, button: discord.ui.Button, interaction: discord.Interaction):
+
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['staff']) not in interaction.user.roles:
+
+            await interaction.response.send_message('Você não tem permissoes para isso', ephemeral = True)
+
+            return
+
+        channel = self.bot.get_channel(configData['chats']['cmdstf'])
+
+        def check(m):
+            return m.content and m.author.id == interaction.user.id
+
+        try:
+
+            id = await channel.send('Mande o id da pessoa a expulsar')
+
+            msg = await self.bot.wait_for('message', check = check, timeout = 130)
+
+            membro = interaction.guild.get_member(int(msg.content))
+
+            await id.delete()
+
+            await msg.delete()
+
+            def check2(m):
+                return m.content and m.author.id == interaction.user.id
+
+            try:
+
+                id = await channel.send('Mande o motivo de expulsar o membro')
+
+                msg2 = await self.bot.wait_for('message', check = check2, timeout = 130)
+
+                await id.delete()
+
+                await msg2.delete()
+
+                print(msg2.content)
+
+                e = discord.Embed(title = 'Kick')
+
+                e.add_field(name = 'Pessoa a expulsar', value = f'{membro.mention}')
+                e.add_field(name = 'Quem expulsou', value = interaction.user.mention, inline = False)
+                e.add_field(name = 'Motivo', value = msg2.content)
+
+                await channel.send(embed = e, view = kick(self.bot,membro,msg2.content, interaction.user))
+
+                print(msg.content, msg2.content)
+
+            except:
+                print('error')
+
+        except:
+            print('error')
+    
+    @discord.ui.button(label = 'advertência', style = discord.ButtonStyle.blurple)
+    async def advertência(self, button: discord.ui.Button, interaction: discord.Interaction):
+
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['staff']) not in interaction.user.roles:
+
+            await interaction.response.send_message('Você não tem permissoes para isso', ephemeral = True)
+
+            return
+
+        channel = self.bot.get_channel(configData['chats']['cmdstf'])
+
+        def check(m):
+            return m.content and m.author.id == interaction.user.id
+
+        try:
+
+            id50 = await channel.send('Escreva "adc" para adicionar ou "rmv" para remover uma advertência')
+
+            ms = await self.bot.wait_for('message', check = check, timeout = 130)
+
+            await id50.delete()
+
+            await ms.delete()
+
+            if ms.content.lower() == 'adc':
+
+                def check(m):
+                    return m.content and m.author.id == interaction.user.id
+
+                try:
+
+                    id = await channel.send('Mande o id da pessoa a adverter')
+
+                    msg = await self.bot.wait_for('message', check = check, timeout = 130)
+
+                    membro = interaction.guild.get_member(int(msg.content))
+
+                    await id.delete()
+
+                    await msg.delete()
+
+                    def check2(m):
+                        return m.content and m.author.id == interaction.user.id
+
+                    try:
+
+                        id = await channel.send('Mande o motivo de adverter o membro')
+
+                        msg2 = await self.bot.wait_for('message', check = check2, timeout = 130)
+
+                        await id.delete()
+
+                        await msg2.delete()
+
+                        print(msg2.content)
+
+                        e = discord.Embed(title = 'Advertencia')
+
+                        e.add_field(name = 'Pessoa a adverter', value = f'{membro.mention}')
+                        e.add_field(name = 'Quem adverteu', value = interaction.user.mention, inline = False)
+                        e.add_field(name = 'Motivo', value = msg2.content)
+
+                        await channel.send(embed = e, view = adv(self.bot,membro,msg2.content))
+
+                    except:
+                        print('error')
+
+                except:
+                    print('error')
+            
+            elif ms.content.lower() == 'rmv':
+
+                def check50(m):
+                    return m.content and m.author.id == interaction.user.id
+
+                try:
+
+                    id70 = await channel.send('Mande o id da pessoa a remover a advertencia')
+
+                    msg50 = await self.bot.wait_for('message', check = check50, timeout = 130)
+
+                    membro = interaction.guild.get_member(int(msg50.content))
+
+                    await id70.delete()
+
+                    await msg50.delete()
+
+                    e = discord.Embed(title = 'Advertencia')
+
+                    e.add_field(name = 'Remover advertencia de ', value = f'{membro.mention}')
+                    e.add_field(name = 'Quem removeu ', value = interaction.user.mention, inline = False)
+
+                    await channel.send(embed = e, view = rmvadv(self.bot,membro))
+
+                except:
+
+                    print('error')
+        except:
+
+            print('error')

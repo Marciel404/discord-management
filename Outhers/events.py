@@ -1,3 +1,36 @@
+async def stf(self):
+
+    channel = self.bot.get_channel(configData['chats']['cmdstf'])
+
+    await channel.purge(limit = 1)
+
+    await channel.send(view = cmdstf(self.bot))
+
+async def tck(self):
+
+    guild = self.bot.get_guild(configData["guild"])
+
+    e = discord.Embed(
+
+    title = 'Precisa de ajuda? Reaja a 🛎 para abrir um ticket',
+
+    description = 'Com os tickets você pode reportar algo ou tirar alguma dúvida.',
+
+    color = 0x4B0082)
+
+    e.set_footer(text = 'Staff Hayleng', icon_url = guild.icon)
+    
+    e.set_image(url = 'https://media.giphy.com/media/sKezAGnlMZmLnwXwP8/giphy.gif')
+
+    channel = self.bot.get_channel(configData['chats']['ticket'])
+
+    await channel.purge(limit=1)
+
+    await channel.send(embed = e, view = ticket())
+
+
+
+
 from Outhers.info.fi import *
 from Commands.Mod import *
 
@@ -9,6 +42,8 @@ class events(commands.Cog):
     async def on_ready(self):
 
         await tck(self)
+
+        await stf(self)
 
         await self.bot.change_presence(status=discord.Status.idle)
 
@@ -23,9 +58,7 @@ class events(commands.Cog):
 
         if message.author.bot: return
         
-        elif message.mention_everyone:
-
-            return
+        elif message.mention_everyone:return
 
     @commands.Cog.listener()
     async def on_message_edit(self, antes:discord.Message, depois: discord.Message):
@@ -77,12 +110,12 @@ class events(commands.Cog):
         if antes.nick != depois.nick:
             e = discord.Embed(
 
-            description = f'{antes.mention} editou o nick'
+            description = f'{antes.mention} editou o apelido'
             
         )
-            e.add_field(name = 'Nome antigo:', value = f'{antes.display_name}', inline=False)
+            e.add_field(name = 'Apelido antigo:', value = f'{antes.display_name}', inline=False)
 
-            e.add_field(name = 'Nome novo:', value =  f'{depois.display_name}', inline=False)
+            e.add_field(name = 'Apelido novo:', value =  f'{depois.display_name}', inline=False)
 
             e.set_author(name = f'{antes.name}#{antes.discriminator}', icon_url = antes.display_avatar)
 
@@ -90,19 +123,49 @@ class events(commands.Cog):
 
             await channel.send(embed = e)
 
+        if antes.display_avatar != depois.display_avatar:
+
+            e = discord.Embed(
+
+            description = f'{antes.mention} trocou a foto no server\nFoto antiga:'
+            
+        )
+
+            e.set_image(url = antes.display_avatar)
+
+            e.set_author(name = f'{antes.name}#{antes.discriminator}', icon_url = antes.display_avatar)
+
+            e.set_footer(text = f'生 HAYLENG 死 às {dt}')
+
+            await channel.send(embed = e)
+
+            e2 = discord.Embed(
+
+                description = f'Foto Nova:'
+                
+            )
+
+            e2.set_image(url = depois.display_avatar)
+
+            e2.set_author(name = f'{antes.name}#{antes.discriminator}', icon_url = antes.display_avatar)
+
+            e2.set_footer(text = f'生 HAYLENG 死 às {dt}')
+
+            await channel.send(embed = e2)
+
     @commands.Cog.listener()
     async def on_user_update(self, antes:discord.User, depois:discord.User):
 
         channel = self.bot.get_channel(configData['logs']['membros'])
 
-        if antes.nick != depois.nick:
+        if antes.name != depois.name:
             e = discord.Embed(
 
             description = f'{antes.mention} editou o nick'
         )
-            e.add_field(name = 'Nome antigo:', value = f'{antes.display_name}', inline=False)
+            e.add_field(name = 'Nome antigo:', value = f'{antes.name}', inline=False)
 
-            e.add_field(name = 'Nome novo:', value =  f'{depois.display_name}', inline=False)
+            e.add_field(name = 'Nome novo:', value =  f'{depois.name}', inline=False)
 
             e.set_author(name = f'{antes.name}#{antes.discriminator}', icon_url = antes.display_avatar)
 
@@ -137,12 +200,12 @@ class events(commands.Cog):
                     
                     }
 
-                    await guild._create_channel(name = f'Call Privada de {member.display_name}',  
+                    await guild._create_channel(name = f'Call Privada de {member.name}',  
                     channel_type = discord.ChannelType.voice, 
                     category = discord.utils.get(member.guild.categories, id = configData['catego']['callpv']),
                     overwrites = overwrites)
 
-                    call = discord.utils.get(member.guild.channels, name = f'Call Privada de {member.display_name}')
+                    call = discord.utils.get(member.guild.channels, name = f'Call Privada de {member.name}')
 
                     await asyncio.sleep(1)
 
@@ -165,7 +228,7 @@ class events(commands.Cog):
 
                 return
 
-            call = discord.utils.get(member.guild.channels, name = f'Call Privada de {member.display_name}')
+            call = discord.utils.get(member.guild.channels, name = f'Call Privada de {member.name}')
 
             if before.channel == call:
 
@@ -176,8 +239,6 @@ class events(commands.Cog):
                 await before.channel.delete()
             
             if after.channel == None:
-
-                call = discord.utils.get(member.guild.channels, name = f'Call Privada de {member.display_name}')
 
                 e = discord.Embed(
 
@@ -210,9 +271,9 @@ class events(commands.Cog):
                     
                     }
 
-                    await guild._create_channel(name = f'Call Privada de {member.display_name}',  
+                    await guild._create_channel(name = f'Call Privada de {member.name}',  
                     channel_type = discord.ChannelType.voice, 
-                    category = discord.utils.get(member.guild.categories, id = 1000788986844958751),
+                    category = discord.utils.get(member.guild.categories, id = configData['catego']['callpv']),
                     overwrites = overwrites)
 
                     await asyncio.sleep(1)

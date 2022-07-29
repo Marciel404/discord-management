@@ -16,6 +16,9 @@ class Mod(commands.Cog):
     membro: discord.Member = None, 
     *,motivo=None):
 
+        user = self.bot.get_user(int(id)).mutual_guilds()
+        
+
 
         if motivo == None:
 
@@ -41,7 +44,7 @@ class Mod(commands.Cog):
 
             return
 
-        await ctx.response.send_message(embed = e1, view = kick(self.bot,membro, motivo, ctx))
+        await ctx.response.send_message(embed = e1, view = kick(self.bot,membro, motivo, ctx.author))
 
     @discord.slash_command(name = 'ban', description = 'Bane um membro')
     @discord.option(name = 'Membro', description = 'Escolha o membro para Banir')
@@ -74,7 +77,7 @@ class Mod(commands.Cog):
 
             return
 
-        await ctx.response.send_message(embed = e1, view = ban(self.bot, membro,motivo,ctx))
+        await ctx.response.send_message(embed = e1, view = ban(self.bot, membro,motivo,ctx.author))
 
     @discord.slash_command(name = 'embed', description = 'Envia uma embed em um chat desejado')
     @discord.option(name = 'Canal', description = 'Escolha o chat para enviar a embed')
@@ -133,33 +136,6 @@ class Mod(commands.Cog):
             purge = await ctx.channel.purge(limit=quantidade)
 
             await ctx.response.send_message(f"O chat teve {len(purge)} mensagens apagadas por {ctx.author.mention}")
-
-    @discord.slash_command(name = 'banid', description ='bane um membro que não está no server')
-    @discord.option(name = 'membro', description = 'Coloque o id da pesoa a banir')
-    @discord.option(name = 'motivo', description = 'Escreva o motivo de Banir')
-    @commands.bot_has_permissions(ban_members = True)
-    @commands.has_permissions(ban_members = True)
-    async def banid(self, ctx, membro: int, *,motivo=None):
-
-        if motivo == None:
-
-            motivo = 'Motivo não informado'
-
-        else:
-
-            motivo = motivo
-
-        e1 = discord.Embed(title = 'BanId', description = f'Voce esta prestes a banir {membro}')
-
-        if membro == self.bot.user.id:
-
-            await ctx.response.send_message('Não posso banir a mim mesmo')
-
-        elif  membro == ctx.author.id:
-
-            await ctx.response.send_message('Você não pode banir a si mesmo')
-
-        await ctx.response.send_message(embed = e1, view = banid(self.bot, id,motivo,ctx))
 
     @discord.slash_command(name = 'unban', description = 'Desbane um membro')
     @discord.option(name = 'id', description = 'Coloque o id do membro a desbanir')
@@ -253,7 +229,6 @@ class Mod(commands.Cog):
     @discord.option(name = 'motivo', description = 'Escreva o motivo da advertencia')
     async def adv(self, ctx, membro: discord.Member, *, motivo = None):
 
-
         if motivo == None:
 
             motivo = 'Não informado'
@@ -295,7 +270,6 @@ class Mod(commands.Cog):
             await membro.remove_roles(mute)
 
             return
-
 
         if role1 in membro.roles:
 
@@ -340,6 +314,52 @@ class Mod(commands.Cog):
 
             return
 
+    @discord.slash_command(name = 'veradv', description = 'Envia as advs de um membro')
+    @discord.option(name = 'membro', description = 'Escolha o membro a remover a advertencia')
+    async def veradv(self, ctx, membro: discord.Member):
+
+        myquery = { "_id": membro.id}
+        if (mute.count_documents(myquery) == 0):
+
+            await advdb(membro,3,'None')
+
+            await advdb(membro,2,'None')
+
+            await advdb(membro,1,'None')
+
+        adv = mute.find_one({"_id": membro.id})
+
+        adv1 = adv['Adv1']
+
+        adv2 = adv['Adv2']
+
+        adv3 = adv['Adv3']
+
+        if adv1 == 'None':
+
+            await ctx.respond('Esse membro não Possui advertencia', ephemeral = True)
+
+        if adv3 != 'None':
+            e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}\nAdv2: {adv2}\nAdv3: {adv3}')
+
+            await ctx.respond(embed = e, ephemeral = True)
+
+            return
+
+        if adv2 != 'None':
+            e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}\nAdv2: {adv2}')
+
+            await ctx.respond(embed = e, ephemeral = True)
+
+            return
+        
+        if adv1 != 'None':
+            e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}')
+
+            await ctx.respond(embed = e, ephemeral = True)
+
+            return
+    
     @discord.slash_command(name = 'rmvadv', description = 'Remove uma advertencia de um membro')
     @discord.option(name = 'membro', description = 'Escolha o membro a remover a advertencia')
     async def rmvvadv(self, ctx, membro: discord.Member):
@@ -390,51 +410,13 @@ class Mod(commands.Cog):
 
             return
 
-    @discord.slash_command(name = 'veradv', description = 'Envia as advs de um membro')
-    @discord.option(name = 'membro', description = 'Escolha o membro a remover a advertencia')
-    async def veradv(self, ctx, membro: discord.Member):
+async def stf(self):
 
-        myquery = { "_id": membro.id}
-        if (mute.count_documents(myquery) == 0):
+    channel = self.bot.get_channel(configData['chats']['cmdstf'])
 
-            await advdb(membro,3,'None')
+    await channel.purge(limit = 1)
 
-            await advdb(membro,2,'None')
-
-            await advdb(membro,1,'None')
-
-        adv = mute.find_one({"_id": membro.id})
-
-        adv1 = adv['Adv1']
-
-        adv2 = adv['Adv2']
-
-        adv3 = adv['Adv3']
-
-        if adv1 == 'None':
-
-            await ctx.respond('Esse membro não Possui advertencia', ephemeral = True)
-
-        if adv3 != 'None':
-            e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}\nAdv2: {adv2}\nAdv3: {adv3}')
-
-            await ctx.respond(embed = e, ephemeral = True)
-
-            return
-
-        if adv2 != 'None':
-            e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}\nAdv2: {adv2}')
-
-            await ctx.respond(embed = e, ephemeral = True)
-
-            return
-        
-        if adv1 != 'None':
-            e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}')
-
-            await ctx.respond(embed = e, ephemeral = True)
-
-            return
+    await channel.send(view = cmdstf(self.bot))
 
 async def tck(self):
 
