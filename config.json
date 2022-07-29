@@ -1,10 +1,10 @@
 {
   
-  "token": ,
+  "token": "",
 
   "guild": ,
 
-  "prefix": ,
+  "prefix": "",
   
   "roles":{
 
@@ -20,7 +20,7 @@
 
     "eventos": {
 
-      "orgeventos":  ,
+      "orgeventos": ,
 
       "apresentator": 
     },
@@ -60,13 +60,17 @@
 
       "mod": ,
 
-      "membros": 
+      "membros": ,
+
+      "fotos": 
   },
   "chats": {
 
     "ticket": ,
 
-    "ausencia": 
+    "ausencia": ,
+
+    "cmdstf": 
 
   },
   "catego":{
