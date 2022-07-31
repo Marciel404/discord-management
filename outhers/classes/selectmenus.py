@@ -174,6 +174,8 @@ class cargoevento(discord.ui.View):
 
                 await channel.send(embed = e, view = adccap(self.bot, membro, capeventos, interaction.user))
 
+                self.stop()
+
             else:
 
                 interaction.response.send_message('Você não tem permissão para usar isto', ephemeral = True)
@@ -200,6 +202,8 @@ class cargoevento(discord.ui.View):
             e.add_field(name = 'Quem adicionou ', value = interaction.user.mention, inline = False)
 
             await channel.send(embed = e, view = adccargo(self.bot, membro, apresentador, interaction.user))
+
+            self.stop()
 
 class cargocall(discord.ui.View):
 
@@ -263,6 +267,8 @@ class cargocall(discord.ui.View):
 
                 await channel.send(embed = e, view = adccap(self.bot, membro, submod, interaction.user))
 
+                self.stop()
+
             else:
 
                 interaction.response.send_message('Você não tem permissão para usar isto', ephemeral = True)
@@ -289,6 +295,8 @@ class cargocall(discord.ui.View):
 
             await channel.send(embed = e, view = adccargo(self.bot, membro, staffcall, interaction.user))
 
+            self.stop()
+
         if select.values[0] == 'Movimentação':
 
             await interaction.response.send_message('Mande no chat o id da pessoa a receber o cargo', ephemeral = True)
@@ -308,6 +316,8 @@ class cargocall(discord.ui.View):
             e.add_field(name = 'Quem adicionou ', value = interaction.user.mention, inline = False)
 
             await channel.send(embed = e, view = adccargo(self.bot, membro, movi, interaction.user))
+
+            self.stop()
 
 class cargochat(discord.ui.View):
 
@@ -371,6 +381,8 @@ class cargochat(discord.ui.View):
 
                 await channel.send(embed = e, view = adccap(self.bot, membro, liderchat, interaction.user))
 
+                self.stop()
+
             else:
 
                 interaction.response.send_message('Você não tem permissão para usar isto', ephemeral = True)
@@ -397,6 +409,8 @@ class cargochat(discord.ui.View):
 
             await channel.send(embed = e, view = adccargo(self.bot, membro, staffchat, interaction.user))
 
+            self.stop()
+
         if select.values[0] == 'Movimentação':
 
             await interaction.response.send_message('Mande no chat o id da pessoa a receber o cargo', ephemeral = True)
@@ -416,6 +430,8 @@ class cargochat(discord.ui.View):
             e.add_field(name = 'Quem adicionou ', value = interaction.user.mention, inline = False)
 
             await channel.send(embed = e, view = adccargo(self.bot, membro, movi, interaction.user))
+
+            self.stop()
 
 class cargodiv(discord.ui.View):
 
@@ -473,6 +489,8 @@ class cargodiv(discord.ui.View):
 
                 await channel.send(embed = e, view = adccap(self.bot, membro, promoters, interaction.user))
 
+                self.stop()
+
             else:
 
                 interaction.response.send_message('Você não tem permissão para usar isto', ephemeral = True)
@@ -499,6 +517,8 @@ class cargodiv(discord.ui.View):
             e.add_field(name = 'Quem adicionou ', value = interaction.user.mention, inline = False)
 
             await channel.send(embed = e, view = adccargo(self.bot, membro, divulgação, interaction.user))
+
+            self.stop()
 
 class cargos1(discord.ui.View):
 
@@ -551,6 +571,8 @@ class cargos1(discord.ui.View):
 
                 await interaction.response.send_message('Qual cargo vai adicionar?', ephemeral = True, view = cargoevento(self.bot))
 
+                self.stop()
+
             else:
 
                 await interaction.response.send_message('Você não tem permissão para usar isto', ephemeral = True)
@@ -564,6 +586,8 @@ class cargos1(discord.ui.View):
             or mod in interaction.user.roles:
 
                 await interaction.response.send_message('Qual cargo vai adicionar?', ephemeral = True, view = cargocall(self.bot))
+
+                self.stop()
 
             else:
 
@@ -579,6 +603,8 @@ class cargos1(discord.ui.View):
 
                 await interaction.response.send_message('Qual cargo vai adicionar?', ephemeral = True, view = cargochat(self.bot))
 
+                self.stop()
+
             else:
 
                 await interaction.response.send_message('Você não tem permissão para usar isto', ephemeral = True)
@@ -592,6 +618,8 @@ class cargos1(discord.ui.View):
             or mod in interaction.user.roles:
 
                 await interaction.response.send_message('Qual cargo vai adicionar?', ephemeral = True, view = cargodiv(self.bot))
+
+                self.stop()
 
             else:
 

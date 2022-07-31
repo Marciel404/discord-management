@@ -1,5 +1,7 @@
+from errno import EPERM
 import discord, asyncio
-from outhers.info.fi import configData, dt
+from discord.ext import commands
+from outhers.info.fi import configData
 from outhers.db.mod import *
 from outhers.classes.selectmenus import *
 
@@ -155,6 +157,8 @@ class rmvadv(discord.ui.View):
 
             channel = self.bot.get_channel(configData['logs']['mod'])
 
+            mute = discord.utils.get(interaction.guild.roles, id = configData['roles']['outras']['mute'])
+
             e = discord.Embed(title = 'Remoção adv', description = f'{interaction.user.mention} removeu uma advertencia de {membro.mention}')
 
             if role3 in membro.roles:
@@ -166,6 +170,8 @@ class rmvadv(discord.ui.View):
                 await channel.send(embed = e)
 
                 await interaction.response.send_message('Advertência removida com sucesso', ephemeral = True)
+
+                await self.membro.remove_roles(mute)
 
                 return
 
@@ -179,6 +185,8 @@ class rmvadv(discord.ui.View):
 
                 await interaction.response.send_message('Advertência removida com sucesso', ephemeral = True)
 
+                await self.membro.remove_roles(mute)
+
                 return
 
             elif role1 in membro.roles:
@@ -190,6 +198,8 @@ class rmvadv(discord.ui.View):
                 await channel.send(embed = e)
 
                 await interaction.response.send_message('Advertência removida com sucesso', ephemeral = True)
+
+                await self.membro.remove_roles(mute)
 
                 return
 
@@ -483,6 +493,11 @@ class cmdstf(discord.ui.View):
 
     @discord.ui.button(label = 'Ausencia', style = discord.ButtonStyle.blurple)
     async def ausente(self, button: discord.ui.Button, interaction: discord.Interaction):
+
+        data_e_hora_atuais = datetime.now()
+        fuso_horario = timezone('America/Sao_Paulo')
+        data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
+        dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
 
         def check(m):
             return m.content and m.author.id == interaction.user.id

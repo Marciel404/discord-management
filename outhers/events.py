@@ -144,6 +144,7 @@ class events(commands.Cog):
     async def on_voice_state_update(self, member:discord.Member, before:discord.VoiceState, after:discord.VoiceState):
 
         channel = self.bot.get_channel(configData['logs']['call'])
+        channel2 = self.bot.get_channel(configData['logs']['microfone'])
         
         guild = member.guild
 
@@ -272,7 +273,7 @@ class events(commands.Cog):
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
-            await channel.send(embed = e)
+            await channel2.send(embed = e)
         
         elif before.self_deaf:
 
@@ -284,7 +285,7 @@ class events(commands.Cog):
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
-            await channel.send(embed = e)
+            await channel2.send(embed = e)
 
         elif before.self_mute:
 
@@ -296,7 +297,7 @@ class events(commands.Cog):
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
-            await channel.send(embed = e)
+            await channel2.send(embed = e)
 
         elif after.self_mute:
 
@@ -308,7 +309,7 @@ class events(commands.Cog):
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
-            await channel.send(embed = e)
+            await channel2.send(embed = e)
 
         elif after.self_video:
 
@@ -320,7 +321,7 @@ class events(commands.Cog):
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
-            await channel.send(embed = e)
+            await channel2.send(embed = e)
         
         elif before.self_video:
 
@@ -332,7 +333,7 @@ class events(commands.Cog):
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
-            await channel.send(embed = e)
+            await channel2.send(embed = e)
 
         elif after.self_stream:
 
@@ -344,7 +345,7 @@ class events(commands.Cog):
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
-            await channel.send(embed = e)
+            await channel2.send(embed = e)
         
         elif before.self_stream:
 
@@ -356,7 +357,7 @@ class events(commands.Cog):
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
-            await channel.send(embed = e)
+            await channel2.send(embed = e)
 
         if after.deaf:
 
@@ -368,7 +369,7 @@ class events(commands.Cog):
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
-            await channel.send(embed = e)
+            await channel2.send(embed = e)
         
         elif before.deaf:
 
@@ -380,7 +381,7 @@ class events(commands.Cog):
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
-            await channel.send(embed = e)
+            await channel2.send(embed = e)
 
         elif before.mute:
 
@@ -392,7 +393,7 @@ class events(commands.Cog):
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
-            await channel.send(embed = e)
+            await channel2.send(embed = e)
 
         elif after.mute:
 
@@ -404,7 +405,7 @@ class events(commands.Cog):
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
-            await channel.send(embed = e)
+            await channel2.send(embed = e)
 
 def setup(bot:commands.Bot):
     bot.add_cog(events(bot))
