@@ -1,87 +1,126 @@
 {
-  
+
   "token": "",
 
-  "guild": ,
+  "prefix": "h!",
 
-  "prefix": "",
+  "guild":,
   
   "roles":{
 
     "staff": {
-      "admin": ,
 
-      "mod": ,
+      "admin":,
 
-      "submod": ,
+      "mod":,
 
-      "staff": 
+      "suporte":,
+
+      "staff":
+
     },
 
-    "eventos": {
+    "equipes":{
 
-      "orgeventos": ,
+      "equipecall": {
 
-      "apresentator": 
+        "submod":,
+
+        "staffcall":,
+
+        "movimenta":
+
+      },
+
+      "equipechat": {
+        
+        "liderchat":,
+
+        "staffchat":, 
+
+        "movimenta":
+      },
+
+      "equipeeventos": {
+
+        "chefeeventos":,
+
+        "apresentador":
+
+      },
+
+      "equipediv": {
+
+        "promoters":,
+
+        "div":
+
+      }
+
     },
 
     "adv": {
 
-      "adv1": ,
+      "adv1":,
 
-      "adv2": ,
+      "adv2":,
 
-      "adv3": 
+      "adv3":
 
     },
 
-    "outras": {
+    "outras":{
 
-      "standby": ,
+      "standby":,
 
-      "verificado": ,
+      "verificado":,
 
-      "mute": ,
+      "mute":,
 
-      "ntb": ,
+      "ntb":,
 
-      "nv100": ,
+      "nv100" :,
 
-      "callpv": 
+      "callpv":
 
     }
 
   },
-  "logs": {
 
-      "chat": ,
+  "logs":{
 
-      "call": ,
+    "chat":,
 
-      "mod": ,
+    "call",
 
-      "membros": ,
+    "mod":,
 
-      "fotos": 
+    "membros":,
+
+    "cargos":
+
   },
-  "chats": {
 
-    "ticket": ,
+  "chats":{
 
-    "ausencia": ,
+    "ticket":,
 
-    "cmdstf": 
+    "ausencia":,
+
+    "cmdstf":
 
   },
   "catego":{
 
-    "callpv": ,
+    "callpv":,
 
-    "ticket": 
+    "ticket":
+
   },
-  "calls": {
 
-    "espera": 
+  "calls":{
+    
+    "espera":
 
   }
 }
