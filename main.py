@@ -1,4 +1,4 @@
-from Outhers.info.fi import *
+from outhers.info.fi import *
 
 intents = discord.Intents.all()
 
@@ -14,16 +14,16 @@ intents = intents
 
 )
 
-for filename in os.listdir('./Commands'):
+for filename in os.listdir('./commands'):
         
     if filename.endswith('.py'):
 
-        client.load_extension('Commands.{0}'.format(filename[:-3]))
+        client.load_extension('commands.{0}'.format(filename[:-3]))
 
-for filename in os.listdir('./Outhers'):
+for filename in os.listdir('./outhers'):
 
     if filename.endswith('.py'):
 
-        client.load_extension(f'Outhers.{filename[:-3]}')
+        client.load_extension(f'outhers.{filename[:-3]}')
 
 client.run(configData['token'])
