@@ -18,6 +18,7 @@ class events(commands.Cog):
 
         print(discord.__version__)
 
+
     @commands.Cog.listener()
     async def on_message(self, message):
 
@@ -29,6 +30,11 @@ class events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, antes:discord.Message, depois: discord.Message):
+
+        data_e_hora_atuais = datetime.now()
+        fuso_horario = timezone('America/Sao_Paulo')
+        data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
+        dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
 
         if antes.author.bot:
 
@@ -54,6 +60,11 @@ class events(commands.Cog):
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message):
 
+        data_e_hora_atuais = datetime.now()
+        fuso_horario = timezone('America/Sao_Paulo')
+        data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
+        dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
+
         channel = self.bot.get_channel(configData['logs']['chat'])
 
         e = discord.Embed(
@@ -71,6 +82,11 @@ class events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_update(self, antes:discord.User, depois:discord.User):
+
+        data_e_hora_atuais = datetime.now()
+        fuso_horario = timezone('America/Sao_Paulo')
+        data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
+        dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
 
         channel = self.bot.get_channel(configData['logs']['membros'])
 
@@ -90,38 +106,19 @@ class events(commands.Cog):
 
             await channel.send(embed = e)
 
-        if antes.display_avatar != depois.display_avatar:
+        if antes.roles != depois.roles:
 
-            e = discord.Embed(
+            if discord.utils.get(antes.guild.roles, id = configData['roles']['outras']['verificado']) in depois.roles:
 
-            description = f'{antes.mention} trocou a foto no server\nFoto antiga:'
-            
-        )
-
-            e.set_image(url = antes.display_avatar)
-
-            e.set_author(name = f'{antes.name}#{antes.discriminator}', icon_url = antes.display_avatar)
-
-            e.set_footer(text = f'生 HAYLENG 死 às {dt}')
-
-            await channel.send(embed = e)
-
-            e2 = discord.Embed(
-
-                description = f'Foto Nova:'
-                
-            )
-
-            e2.set_image(url = depois.display_avatar)
-
-            e2.set_author(name = f'{antes.name}#{antes.discriminator}', icon_url = antes.display_avatar)
-
-            e2.set_footer(text = f'生 HAYLENG 死 às {dt}')
-
-            await channel.send(embed = e2)
+                await depois.remove_roles(discord.utils.get(antes.guild.roles, id = configData['roles']['outras']['naoverificado']))
 
     @commands.Cog.listener()
     async def on_user_update(self, antes:discord.User, depois:discord.User):
+
+        data_e_hora_atuais = datetime.now()
+        fuso_horario = timezone('America/Sao_Paulo')
+        data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
+        dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
 
         channel = self.bot.get_channel(configData['logs']['membros'])
 
@@ -142,6 +139,11 @@ class events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member:discord.Member, before:discord.VoiceState, after:discord.VoiceState):
+
+        data_e_hora_atuais = datetime.now()
+        fuso_horario = timezone('America/Sao_Paulo')
+        data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
+        dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
 
         channel = self.bot.get_channel(configData['logs']['call'])
         channel2 = self.bot.get_channel(configData['logs']['microfone'])
@@ -224,8 +226,8 @@ class events(commands.Cog):
                 return
 
             if after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['ntb']) in member.roles \
-                or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['nv100']) in member.roles\
-                or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['staff']['staff']) in member.roles:
+            or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['nv100']) in member.roles\
+            or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['staff']['staff']) in member.roles:
 
                     role1 = discord.utils.get(member.guild.roles, id = configData['roles']['outras']['callpv'])
 
