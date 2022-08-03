@@ -1,6 +1,6 @@
-from outhers.info.fi import *
+from outhers.info.fi import configData, MongoClient
 
-cluster = MongoClient('#')
+cluster = MongoClient(configData['mongokey'])
 
 db = cluster['HYG']
 
