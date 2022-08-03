@@ -1,6 +1,4 @@
-from errno import EPERM
 import discord, asyncio
-from discord.ext import commands
 from outhers.info.fi import configData
 from outhers.db.mod import *
 from outhers.classes.selectmenus import *
