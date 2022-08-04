@@ -406,6 +406,48 @@ class Mod(commands.Cog):
 
             return
 
+    @discord.slash_command(name = 'editembed', description = 'edita uma embed já enviada')
+    @discord.option(name = 'channel', description = 'envie o id do canal')
+    @discord.option(name = 'message', description = 'envie o id da mensagem')
+    @discord.option(name = 'title', description = 'Escreva o titulo da embed')
+    @discord.option(name = 'img', description = 'Escolha a imagem da embed')
+    @discord.option(name = 'Motivo', description = 'Escreva o conteudo da embed')
+    @commands.has_permissions(manage_channels = True)
+    async def editembed(self, ctx, channel: discord.TextChannel = None, message = None, title = None, img = None, *, msg = None):
+
+        if channel == None:
+
+            channel = ctx.channel
+
+        if title == None:
+            title = ''
+
+        if img == None:
+            img = ''
+
+        mensagem = await channel.fetch_message(int(message))
+
+        e = discord.Embed(title = title, description = msg, colour = 0x4B0082)
+        e.set_image(url = img)
+        e.set_footer(text = f'Ass. {ctx.guild.name}', icon_url = ctx.guild.icon)
+
+        await mensagem.edit(embed = e)
+
+    @discord.slash_command(name = 'editmsg', description = 'edita uma mensagem já enviada')
+    @discord.option(name = 'channel', description = 'envie o id do canal')
+    @discord.option(name = 'message', description = 'envie o id da mensagem')
+    @discord.option(name = 'msg', description = 'Escreva a mensagem á editar')
+    @commands.has_permissions(manage_channels = True)
+    async def editmsg(self, ctx, channel: discord.TextChannel = None, message = None, *, msg = None):
+
+        if channel == None:
+
+            channel = ctx.channel
+
+        mensagem = await channel.fetch_message(int(message))
+
+        await mensagem.edit(msg)
+
 async def stf(self):
 
     channel = self.bot.get_channel(configData['chats']['cmdstf'])
