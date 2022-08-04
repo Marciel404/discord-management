@@ -8,7 +8,7 @@ class Membros(commands.Cog):
     @discord.option(name = 'membro', description = 'Escolha o membro para puxar para sua call privada')
     async def mv(self, ctx, membro: discord.Member = None):
 
-        call = discord.utils.get(ctx.author.guild.channels, name = f'Call Privada de {ctx.author.display_name}')
+        call = discord.utils.get(ctx.author.guild.channels, name = f'Call Privada de {ctx.author.name}')
 
         if membro.voice == None:
 
@@ -16,7 +16,7 @@ class Membros(commands.Cog):
 
             return
 
-        if membro.voice.channel == discord.utils.get(ctx.author.guild.channels, name = f'Call Privada de {membro.display_name}'):
+        if membro.voice.channel == discord.utils.get(ctx.author.guild.channels, name = f'Call Privada de {membro.name}'):
 
             await membro.move_to(call)
 
