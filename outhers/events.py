@@ -1,5 +1,6 @@
 from outhers.info.fi import *
 from commands.mod import *
+from outhers.classes.verify import *
 
 class events(commands.Cog):
     def __init__(self, bot:commands.Bot):
@@ -18,6 +19,19 @@ class events(commands.Cog):
 
         print(discord.__version__)
 
+    @commands.Cog.listener()
+    async def on_member_join(self, member:discord.Member):
+
+        await verfyadv(self.bot,member)
+
+    @commands.Cog.listener()
+    async def on_member_ban(self, guild:discord.Guild, member:discord.User):
+
+        myquery = { "_id": member.id}
+
+        if (mute.count_documents(myquery) == 1):
+
+            mute.find_one_and_delete({"_id": member.id})
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -32,8 +46,11 @@ class events(commands.Cog):
     async def on_message_edit(self, antes:discord.Message, depois: discord.Message):
 
         data_e_hora_atuais = datetime.now()
+
         fuso_horario = timezone('America/Sao_Paulo')
+
         data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
+        
         dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
 
         if antes.author.bot:
@@ -61,11 +78,18 @@ class events(commands.Cog):
     async def on_message_delete(self, message: discord.Message):
 
         data_e_hora_atuais = datetime.now()
+
         fuso_horario = timezone('America/Sao_Paulo')
+
         data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
+
         dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
 
         channel = self.bot.get_channel(configData['logs']['chat'])
+
+        if message.embeds:
+
+            return
 
         e = discord.Embed(
 
@@ -84,8 +108,11 @@ class events(commands.Cog):
     async def on_member_update(self, antes:discord.User, depois:discord.User):
 
         data_e_hora_atuais = datetime.now()
+
         fuso_horario = timezone('America/Sao_Paulo')
+
         data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
+
         dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
 
         channel = self.bot.get_channel(configData['logs']['membros'])
@@ -116,8 +143,11 @@ class events(commands.Cog):
     async def on_user_update(self, antes:discord.User, depois:discord.User):
 
         data_e_hora_atuais = datetime.now()
+
         fuso_horario = timezone('America/Sao_Paulo')
+
         data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
+
         dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
 
         channel = self.bot.get_channel(configData['logs']['membros'])
@@ -141,11 +171,15 @@ class events(commands.Cog):
     async def on_voice_state_update(self, member:discord.Member, before:discord.VoiceState, after:discord.VoiceState):
 
         data_e_hora_atuais = datetime.now()
+
         fuso_horario = timezone('America/Sao_Paulo')
+
         data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
+
         dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
 
         channel = self.bot.get_channel(configData['logs']['call'])
+        
         channel2 = self.bot.get_channel(configData['logs']['microfone'])
         
         guild = member.guild
@@ -155,8 +189,9 @@ class events(commands.Cog):
             if before.channel == None:
 
                 if after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['ntb']) in member.roles \
-                or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['nv100']) in member.roles\
-                or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['staff']['staff']) in member.roles:
+                or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['nv100']) in member.roles \
+                or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['staff']['staff']) in member.roles \
+                or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['levelup']) in member.roles:
                 
                     role1 = discord.utils.get(member.guild.roles, id = configData['roles']['outras']['callpv'])
 
@@ -170,9 +205,12 @@ class events(commands.Cog):
                     
                     }
 
-                    await guild._create_channel(name = f'Call Privada de {member.name}',  
-                    channel_type = discord.ChannelType.voice, 
+                    await guild._create_channel(name = f'Call Privada de {member.name}',
+
+                    channel_type = discord.ChannelType.voice,
+
                     category = discord.utils.get(member.guild.categories, id = configData['catego']['callpv']),
+                    
                     overwrites = overwrites)
 
                     call = discord.utils.get(member.guild.channels, name = f'Call Privada de {member.name}')
@@ -226,31 +264,35 @@ class events(commands.Cog):
                 return
 
             if after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['ntb']) in member.roles \
-            or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['nv100']) in member.roles\
-            or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['staff']['staff']) in member.roles:
+            or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['nv100']) in member.roles \
+            or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['staff']['staff']) in member.roles \
+            or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['levelup']) in member.roles:
 
-                    role1 = discord.utils.get(member.guild.roles, id = configData['roles']['outras']['callpv'])
+                role1 = discord.utils.get(member.guild.roles, id = configData['roles']['outras']['callpv'])
 
-                    await member.add_roles(role1)
+                await member.add_roles(role1)
 
-                    overwrites = {
+                overwrites = {
 
-                        guild.default_role: discord.PermissionOverwrite(connect=False),
+                    guild.default_role: discord.PermissionOverwrite(connect=False),
 
-                        member: discord.PermissionOverwrite(connect = True)
-                    
-                    }
+                    member: discord.PermissionOverwrite(connect = True)
+                
+                }
 
-                    await guild._create_channel(name = f'Call Privada de {member.name}',  
-                    channel_type = discord.ChannelType.voice, 
-                    category = discord.utils.get(member.guild.categories, id = configData['catego']['callpv']),
-                    overwrites = overwrites)
+                await guild._create_channel(name = f'Call Privada de {member.name}',
 
-                    await asyncio.sleep(1)
+                channel_type = discord.ChannelType.voice,
 
-                    await member.move_to(call)
+                category = discord.utils.get(member.guild.categories, id = configData['catego']['callpv']),
 
-                    return
+                overwrites = overwrites)
+
+                await asyncio.sleep(1)
+
+                await member.move_to(call)
+
+                return
 
             e = discord.Embed(
 

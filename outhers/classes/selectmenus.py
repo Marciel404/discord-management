@@ -170,6 +170,7 @@ class cargoevento(discord.ui.View):
                 e = discord.Embed(title = 'Adicionar cargo de Chefe de eventos')
 
                 e.add_field(name = 'Quem vai ser adicionado o cargo', value = f'{membro.mention}')
+                
                 e.add_field(name = 'Quem adicionou ', value = interaction.user.mention, inline = False)
 
                 await channel.send(embed = e, view = adccap(self.bot, membro, capeventos, interaction.user))
@@ -199,6 +200,7 @@ class cargoevento(discord.ui.View):
             e = discord.Embed(title = 'Adicionar cargo de Chefe de eventos')
 
             e.add_field(name = 'Quem vai ser adicionado o cargo', value = f'{membro.mention}')
+
             e.add_field(name = 'Quem adicionou ', value = interaction.user.mention, inline = False)
 
             await channel.send(embed = e, view = adccargo(self.bot, membro, apresentador, interaction.user))
@@ -498,7 +500,6 @@ class cargodiv(discord.ui.View):
                 return
 
         if select.values[0] == 'Divulgação':
-
 
             await interaction.response.send_message('Mande no chat o id da pessoa a receber o cargo', ephemeral = True)
 

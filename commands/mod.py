@@ -3,7 +3,9 @@ from outhers.classes.buttons import *
 from outhers.db.mod import *
 
 class Mod(commands.Cog):
+    
     def __init__(self, bot:commands.Bot):
+
         self.bot = bot
 
     @discord.slash_command(name = 'kick', description = 'Expulsa um membro')
@@ -11,10 +13,7 @@ class Mod(commands.Cog):
     @discord.option(name = 'Motivo', description = 'Escreva o motivo de expulsar')
     @commands.bot_has_permissions(kick_members = True)
     @commands.has_permissions(kick_members = True)
-    async def kick(self, 
-    ctx, 
-    membro: discord.Member = None, 
-    *,motivo=None):
+    async def kick(self, ctx,membro: discord.Member = None,*,motivo=None):
 
         if motivo == None:
 
@@ -42,75 +41,50 @@ class Mod(commands.Cog):
 
         await ctx.response.send_message(embed = e1, view = kick(self.bot,membro, motivo, ctx.author))
 
-    @discord.slash_command(name = 'ban', description = 'Bane um membro')
-    @discord.option(name = 'Membro', description = 'Escolha o membro para Banir')
-    @discord.option(name = 'Motivo', description = 'Escreva o motivo de Banir')
-    @commands.bot_has_permissions(ban_members = True)
-    @commands.has_permissions(ban_members = True)
-    async def Ban(self, ctx, membro: discord.Member = None, *,motivo=None):
+        cmdl = f'''{ctx.author} usou o comando {ctx.command.name} e expulsou o {membro.name}'''
 
-        if motivo == None:
+        cmdlc = self.bot.get_channel(configData['logs']['usocomandos'])
 
-            motivo = 'Motivo não informado'
-
-        e1 = discord.Embed(title = 'kick', description = f'Voce esta prestes a banir {membro.mention}')
-
-        if membro == self.bot.user:
-
-            await ctx.response.send_message('Não posso banir a mim mesmo')
-
-            return
-
-        elif  membro == ctx.author:
-
-            await ctx.response.send_message('Você não pode banir a si mesmo')
-
-            return
-
-        elif membro == None:
-
-            await ctx.response.send_message('Você precisa mensionar o membro a banir')
-
-            return
-
-        await ctx.response.send_message(embed = e1, view = ban(self.bot, membro,motivo,ctx.author))
+        await cmdlc.send(cmdl)
 
     @discord.slash_command(name = 'embed', description = 'Envia uma embed em um chat desejado')
-    @discord.option(name = 'Canal', description = 'Escolha o chat para enviar a embed')
+    @discord.option(name = 'canal', description = 'Escolha o chat para enviar a embed')
     @discord.option(name = 'title', description = 'Escreva o titulo da embed')
     @discord.option(name = 'img', description = 'Escolha a imagem da embed')
     @discord.option(name = 'Motivo', description = 'Escreva o conteudo da embed')
     @commands.has_permissions(manage_channels = True)
-    async def embed(self, ctx, channel: discord.TextChannel = None, title = None, img = None, *, msg = None):
+    async def embed(self, ctx, canal: discord.TextChannel = None, title = None, img = None, *, msg = None):
 
         if title == None:
+
             title = ''
 
         if img == None:
-            img = ''
-        
-        if title == 'None':
-            title = ''
 
-        if img == 'None':
             img = ''
 
-        if msg == 'None':
+        if msg == None:
             msg = ''
 
         e = discord.Embed(title = title, description = msg, colour = 0x4B0082)
+
         e.set_image(url = img)
+
         e.set_footer(text = f'Ass. {ctx.guild.name}', icon_url = ctx.guild.icon)
 
-        if channel == None:
+        if canal == None:
 
-            await ctx.send(embed = e)
+            canal = ctx.channel
 
-        else:
+        channel2 = self.bot.get_channel(canal.id)
 
-            channel2 = self.bot.get_channel(channel.id)
+        await channel2.send(embed = e)
 
-            await channel2.send(embed = e)
+        cmdl = f'''{ctx.author} usou o comando {ctx.command.name} e enviou uma embed no {canal.mention}'''
+
+        cmdlc = self.bot.get_channel(configData['logs']['usocomandos'])
+
+        await cmdlc.send(cmdl)
 
     @discord.slash_command(name = 'clear', description = 'Limpa o chat')
     @discord.option(name = 'quantidade',type = int, description = 'Escolha a quantidade de mensagens a limpar')
@@ -127,11 +101,17 @@ class Mod(commands.Cog):
 
             await ctx.response.send_message('Você precisa escolher uma quantidade de mensagens, a quantidade maxima é 1000 mensagens')
 
-        else:
+            return
 
-            purge = await ctx.channel.purge(limit=quantidade)
+        purge = await ctx.channel.purge(limit=quantidade)
 
-            await ctx.response.send_message(f"O chat teve {len(purge)} mensagens apagadas por {ctx.author.mention}")
+        await ctx.response.send_message(f"O chat teve {len(purge)} mensagens apagadas por {ctx.author.mention}")
+
+        cmdl = f'''{ctx.author} usou o comando {ctx.command.name} e apagou {len(purge)} mensagens no {ctx.channel}'''
+
+        cmdlc = self.bot.get_channel(configData['logs']['usocomandos'])
+
+        await cmdlc.send(cmdl)
 
     @discord.slash_command(name = 'unban', description = 'Desbane um membro')
     @discord.option(name = 'id', description = 'Coloque o id do membro a desbanir')
@@ -158,6 +138,12 @@ class Mod(commands.Cog):
 
         await ctx.respond(f'{id} desbanido com sucesso')
 
+        cmdl = f'''{ctx.author} usou o comando {ctx.command.name} e desbaniu o <@{id}>'''
+
+        cmdlc = self.bot.get_channel(configData['logs']['usocomandos'])
+
+        await cmdlc.send(cmdl)
+
     @discord.slash_command(name = 'say', description = 'Envia uma mensagem em um chat')
     @discord.option(name = 'canal', description = 'Escolha o canal que falar')
     @discord.option(name = 'mensagem', description = 'Escreva oq deseja que eu fale')
@@ -171,282 +157,174 @@ class Mod(commands.Cog):
 
         if canal == None:
 
-            await ctx.send(mensagem)
+            canal = ctx.channel
 
-        else:
+        cmdl = f'''{ctx.author} usou o comando {ctx.command.name} e falou {mensagem}'''
 
-            channel2 = self.bot.get_channel(canal.id)
+        cmdlc = self.bot.get_channel(configData['logs']['usocomandos'])
 
-            await channel2.send(mensagem)
+        await cmdlc.send(cmdl)
 
+        channel2 = self.bot.get_channel(canal.id)
 
-    @discord.slash_command(name = 'ausente', description = 'Te coloca em estado de stand-by')
-    @discord.option(name = 'motivo', description = 'Escreva o motivo de estar ausente')
-    async def standby(self, ctx, *, motivo = None):
-
-        data_e_hora_atuais = datetime.now()
-        fuso_horario = timezone('America/Sao_Paulo')
-        data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
-        dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
-
-        role = discord.utils.get(ctx.guild.roles, id = configData['roles']['outras']['standby'])
-
-        channel = self.bot.get_channel(configData['chats']['ausencia'])
-
-        if role not in ctx.author.roles:
-
-            if motivo == None:
-
-                await ctx.respond('Você precisa justificar a ausencia', ephemeral = True)
-
-                return
-
-            await ctx.author.add_roles(role)
-
-            await ctx.respond('Você está ausente agora', ephemeral = True)
-
-            await channel.send(f'{ctx.author.name} entrou em ausencia às {dt}\nMotivo: {motivo}')
-
-            return
-
-        if role in ctx.author.roles:
-
-            await ctx.author.remove_roles(role)
-
-            await ctx.respond('Você não está mais ausente agora', ephemeral = True)
-
-            await channel.send(f'{ctx.author.name} Saiu da ausencia às {dt}')
-
-            return
-
-
-    @discord.slash_command(name = 'advertencia', description = 'Da advertencia para um membro')
-    @discord.option(name = 'membro', description = 'Escolha o membro a ser advertido')
-    @discord.option(name = 'motivo', description = 'Escreva o motivo da advertencia')
-    async def adv(self, ctx, membro: discord.Member, *, motivo = None):
-
-        if motivo == None:
-
-            motivo = 'Não informado'
-
-        role1 = discord.utils.get(ctx.guild.roles, id = configData['roles']['adv']['adv1'])
-
-        role2 = discord.utils.get(ctx.guild.roles, id = configData['roles']['adv']['adv2'])
-
-        role3 = discord.utils.get(ctx.guild.roles, id = configData['roles']['adv']['adv3'])
-
-        mute = discord.utils.get(ctx.guild.roles, id = configData['roles']['outras']['mute'])
-
-        channel = self.bot.get_channel(configData['logs']['mod'])
-
-        if role3 in membro.roles:
-
-            E = discord.Embed(title = 'Ban', description = f'Pessoa banida: {membro.name} \n Quem baniu: {ctx.author.mention} \n motivo: Acumulo de adv')
-
-            await channel.send(embed = E)
-
-            await membro.ban(reason = 'Acumulo de advertencia')
-
-            await ctx.respond('Membro advertido com sucesso e banido devido o acumulo de adv', ephemeral = True)
-
-
-        if role2 in membro.roles:
-
-            e = discord.Embed(title = 'Advertencia 3', description = f'{membro.mention} foi advertido por {ctx.author.mention}\nMotivo:{motivo}')
-            
-            await advdb(membro,3,motivo)
-
-            await membro.add_roles(role3, reason = motivo)
-            await membro.add_roles(mute, reason = 'Adv3')
-
-            await channel.send(embed = e)
-
-            await asyncio.sleep(86400)
-
-            await membro.remove_roles(mute)
-
-            return
-
-        if role1 in membro.roles:
-
-            e = discord.Embed(title = 'Advertencia 2', description = f'{membro.mention} foi advertido por {ctx.author.mention}\nMotivo:{motivo}')
-            
-            await advdb(membro,2,motivo)
-
-            await membro.add_roles(role2, reason = motivo)
-            await membro.add_roles(mute, reason = 'Adv2')
-
-            await channel.send(embed = e)
-
-            await ctx.respond('Membro advertido com sucesso', ephemeral = True)
-
-            await asyncio.sleep(10800)
-
-            await membro.remove_roles(mute)
-
-            return
-
-        if role1 not in membro.roles:
-
-            e = discord.Embed(title = 'Advertencia 1', description = f'{membro.mention} foi advertido por {ctx.author.mention}\nMotivo:{motivo}')
-
-            await advdb(membro,3,'None')
-
-            await advdb(membro,2,'None')
-
-            await advdb(membro,1,motivo)
-            
-            await membro.add_roles(role1, reason = motivo)
-
-            await membro.add_roles(mute, reason = 'Adv1')
-
-            await channel.send(embed = e)
-
-            await ctx.respond('Membro advertido com sucesso', ephemeral = True)
-
-            await asyncio.sleep(3600)
-
-            await membro.remove_roles(mute)
-
-            return
+        await channel2.send(mensagem)
 
     @discord.slash_command(name = 'veradv', description = 'Envia as advs de um membro')
     @discord.option(name = 'membro', description = 'Escolha o membro a remover a advertencia')
     async def veradv(self, ctx, membro: discord.Member):
 
         myquery = { "_id": membro.id}
-        if (mute.count_documents(myquery) == 0):
+        if (mute.count_documents(myquery) == 1):
 
-            await advdb(membro,3,'None')
+            cmdl = f'''{ctx.author} usou o comando {ctx.command.name} e viu as advertencias de {membro.display_name}'''
 
-            await advdb(membro,2,'None')
+            cmdlc = self.bot.get_channel(configData['logs']['usocomandos'])
 
-            await advdb(membro,1,'None')
+            await cmdlc.send(cmdl)
 
-        adv = mute.find_one({"_id": membro.id})
+            adv = mute.find_one({"_id": membro.id})
 
-        adv1 = adv['Adv1']
+            adv1 = adv['Adv1']
 
-        adv2 = adv['Adv2']
+            adv2 = adv['Adv2']
 
-        adv3 = adv['Adv3']
+            adv3 = adv['Adv3']
 
-        if adv1 == 'None':
+            if adv1 == 'None':
 
-            await ctx.respond('Esse membro não Possui advertencia', ephemeral = True)
+                await ctx.respond('Esse membro não Possui advertencia', ephemeral = True)
 
-        if adv3 != 'None':
-            e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}\nAdv2: {adv2}\nAdv3: {adv3}')
+                return
 
-            await ctx.respond(embed = e, ephemeral = True)
+            if adv3 != 'None':
+                e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}\nAdv2: {adv2}\nAdv3: {adv3}')
 
-            return
+                await ctx.respond(embed = e, ephemeral = True)
 
-        if adv2 != 'None':
-            e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}\nAdv2: {adv2}')
+                return
 
-            await ctx.respond(embed = e, ephemeral = True)
+            if adv2 != 'None':
+                e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}\nAdv2: {adv2}')
 
-            return
+                await ctx.respond(embed = e, ephemeral = True)
+
+                return
+            
+            if adv1 != 'None':
+                e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}')
+
+                await ctx.respond(embed = e, ephemeral = True)
+
+                return
         
-        if adv1 != 'None':
-            e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}')
+        await ctx.respond('Esse membro não Possui advertencia', ephemeral = True)
 
-            await ctx.respond(embed = e, ephemeral = True)
+        cmdl = f'''{ctx.author} usou o comando {ctx.command.name} e viu as advertencias de {membro.display_name}'''
 
-            return
-    
-    @discord.slash_command(name = 'rmvadv', description = 'Remove uma advertencia de um membro')
-    @discord.option(name = 'membro', description = 'Escolha o membro a remover a advertencia')
-    async def rmvvadv(self, ctx, membro: discord.Member):
+        cmdlc = self.bot.get_channel(configData['logs']['usocomandos'])
 
-        role1 = discord.utils.get(ctx.guild.roles, id = configData['roles']['adv']['adv1'])
-
-        role2 = discord.utils.get(ctx.guild.roles, id = configData['roles']['adv']['adv2'])
-
-        role3 = discord.utils.get(ctx.guild.roles, id = configData['roles']['adv']['adv3'])
-
-        channel = self.bot.get_channel(configData['logs']['mod'])
-
-        e = discord.Embed(title = 'Remoção adv', description = f'{ctx.author.mention} removeu uma advertencia de {membro.mention}')
-
-        if role3 in membro.roles:
-            
-            await rmvadvdb(membro,3, 'None')
-
-            await membro.remove_roles(role3)
-
-            await channel.send(embed = e)
-
-            await ctx.respond('Advertencia removida com sucesso', ephemeral = True)
-
-            return
-
-        elif role2 in membro.roles:
-            
-            await rmvadvdb(membro,2,'None')
-
-            await membro.remove_roles(role2)
-
-            await channel.send(embed = e)
-
-            await ctx.respond('Advertencia removida com sucesso', ephemeral = True)
-
-            return
-
-        elif role1 in membro.roles:
-
-            await rmvadvdb(membro,1,'None')
-            
-            await membro.remove_roles(role1)
-
-            await channel.send(embed = e)
-
-            await ctx.respond('Advertencia removida com sucesso', ephemeral = True)
-
-            return
+        await cmdlc.send(cmdl)
 
     @discord.slash_command(name = 'editembed', description = 'edita uma embed já enviada')
     @discord.option(name = 'channel', description = 'envie o id do canal')
-    @discord.option(name = 'message', description = 'envie o id da mensagem')
+    @discord.option(name = 'messageid', description = 'envie o id da mensagem')
     @discord.option(name = 'title', description = 'Escreva o titulo da embed')
     @discord.option(name = 'img', description = 'Escolha a imagem da embed')
     @discord.option(name = 'Motivo', description = 'Escreva o conteudo da embed')
     @commands.has_permissions(manage_channels = True)
-    async def editembed(self, ctx, channel: discord.TextChannel = None, message = None, title = None, img = None, *, msg = None):
+    async def editembed(self, ctx, channel: discord.TextChannel = None, messageid = None, title = None, img = None, *, msg = None):
 
         if channel == None:
 
             channel = ctx.channel
 
         if title == None:
+
             title = ''
 
         if img == None:
+
             img = ''
 
-        mensagem = await channel.fetch_message(int(message))
+        mensagem = await channel.fetch_message(int(messageid))
 
         e = discord.Embed(title = title, description = msg, colour = 0x4B0082)
+
         e.set_image(url = img)
+
         e.set_footer(text = f'Ass. {ctx.guild.name}', icon_url = ctx.guild.icon)
 
         await mensagem.edit(embed = e)
 
+        cmdl = f'{ctx.author} usou o comando {ctx.command.name} e edtou a embed {messageid} no canal {channel.mention}'
+
+        cmdlc = self.bot.get_channel(configData['logs']['usocomandos'])
+
+        await cmdlc.send(cmdl)
+
     @discord.slash_command(name = 'editmsg', description = 'edita uma mensagem já enviada')
     @discord.option(name = 'channel', description = 'envie o id do canal')
-    @discord.option(name = 'message', description = 'envie o id da mensagem')
+    @discord.option(name = 'messageid', description = 'envie o id da mensagem')
     @discord.option(name = 'msg', description = 'Escreva a mensagem á editar')
     @commands.has_permissions(manage_channels = True)
-    async def editmsg(self, ctx, channel: discord.TextChannel = None, message = None, *, msg = None):
+    async def editmsg(self, ctx, channel: discord.TextChannel = None, messageid = None, *, msg = None):
 
         if channel == None:
 
             channel = ctx.channel
 
-        mensagem = await channel.fetch_message(int(message))
+        mensagem = await channel.fetch_message(int(messageid))
 
         await mensagem.edit(msg)
+
+        cmdl = f'''{ctx.author} usou o comando {ctx.command.name} e editou a mensagem {messageid} no chat {channel.mention}'''
+
+        cmdlc = self.bot.get_channel(configData['logs']['usocomandos'])
+
+        await cmdlc.send(cmdl)
+
+    @discord.slash_command(name = 'fmv', description = 'Move um membro para a sua call privada')
+    @discord.option(name = 'membro', description = 'Escolha o membro para mover para uma call')
+    @discord.option(name = 'canal', description = 'Escolha o canal para mover o membro')
+    async def fmv(self, ctx, membro: discord.Member = None, canal: discord.VoiceChannel = None):
+
+        call = self.bot.get_channel(canal.id)
+
+        if membro.voice == None:
+
+            await ctx.respond(f'{membro.mention} não está em um canal de voz', ephemeral = True)
+
+            return
+
+        await membro.move_to(call)
+
+        await ctx.respond(f'{membro.mention} movido para {call}', ephemeral = True)
+
+        cmdl = f'{ctx.author} usou o comando {ctx.command.name} e moveu o {membro.display_name} para o {canal.name}'
+
+        cmdlc = self.bot.get_channel(configData['logs']['usocomandos'])
+
+        await cmdlc.send(cmdl)
+
+    @discord.slash_command(name = 'fdsc', description = 'Desconecta uma pessoa da call')
+    @discord.option(name = 'membro', description = 'Escolha o membro para desconectar da call')
+    async def fdsc(self, ctx, membro: discord.Member = None):
+
+        if membro.voice == None:
+
+            await ctx.respond(f'{membro.mention} não está em um canal de voz', ephemeral = True)
+
+            return
+
+        await membro.move_to(None)
+
+        await ctx.respond(f'{membro.mention} desconectado com sucesso', ephemeral = True)
+
+        cmdl = f'{ctx.author} usou o comando {ctx.command.name} e desconectou o {membro.display_name}'
+
+        cmdlc = self.bot.get_channel(configData['logs']['usocomandos'])
+
+        await cmdlc.send(cmdl)
 
 async def stf(self):
 

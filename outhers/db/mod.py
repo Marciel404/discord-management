@@ -1,4 +1,4 @@
-from outhers.info.fi import configData, MongoClient
+from outhers.info.fi import *
 
 cluster = MongoClient(configData['mongokey'])
 
@@ -9,7 +9,6 @@ mute = db['adv']
 async def advdb(id, qnt, motivo):
 
     mute.update_one({"_id": id.id}, {"$set": {f"Adv{qnt}": motivo}}, upsert = True)
-
 
 async def rmvadvdb(id, qnt, motivo):
 

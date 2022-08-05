@@ -20,6 +20,14 @@ class adv(discord.ui.View):
     @discord.ui.button(label = '✅'  , style = discord.ButtonStyle.blurple)
     async def adv(self, button: discord.ui.Button, interaction: discord.Interaction):
 
+        data_e_hora_atuais = datetime.now()
+
+        fuso_horario = timezone('America/Sao_Paulo')
+
+        data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
+        
+        dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
+
         if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
 
             role1 = discord.utils.get(interaction.guild.roles, id = configData['roles']['adv']['adv1'])
@@ -28,7 +36,7 @@ class adv(discord.ui.View):
 
             role3 = discord.utils.get(interaction.guild.roles, id = configData['roles']['adv']['adv3'])
 
-            mute = discord.utils.get(interaction.guild.roles, id = configData['roles']['outras']['mute'])
+            mute2 = discord.utils.get(interaction.guild.roles, id = configData['roles']['outras']['mute'])
 
             channel = self.bot.get_channel(configData['logs']['mod'])
 
@@ -44,15 +52,14 @@ class adv(discord.ui.View):
 
                 await interaction.response.send_message(f'{self.membro.name} advertido com sucesso e banido devido o acumulo de adv', ephemeral = True)
 
-
             if role2 in self.membro.roles:
 
                 e = discord.Embed(title = 'Advertencia 3', description = f'{self.membro.mention} foi advertido por {self.ctx.mention} e aprovado por {interaction.user.mention}\nMotivo:{self.motivo}')
                 
-                await advdb(self.membro,3,self.motivo)
+                await advdb(self.membro,3,f'{self.motivo} {dt}')
 
                 await self.membro.add_roles(role3, reason = self.motivo)
-                await self.membro.add_roles(mute, reason = 'Adv3')
+                await self.membro.add_roles(mute2, reason = 'Adv3')
 
                 await interaction.message.delete()
 
@@ -60,7 +67,7 @@ class adv(discord.ui.View):
 
                 await asyncio.sleep(86400)
 
-                await self.membro.remove_roles(mute)
+                await self.membro.remove_roles(mute2)
 
                 return
 
@@ -68,10 +75,10 @@ class adv(discord.ui.View):
 
                 e = discord.Embed(title = 'Advertencia 2', description = f'{self.membro.mention} foi advertido por {self.ctx.mention} e aprovado por {interaction.user.mention}\nMotivo:{self.motivo}')
                 
-                await advdb(self.membro,2,self.motivo)
+                await advdb(self.membro,2,f'{self.motivo} {dt}')
 
                 await self.membro.add_roles(role2, reason = self.motivo)
-                await self.membro.add_roles(mute, reason = 'Adv2')
+                await self.membro.add_roles(mute2, reason = 'Adv2')
 
                 await interaction.message.delete()
 
@@ -81,7 +88,7 @@ class adv(discord.ui.View):
 
                 await asyncio.sleep(10800)
 
-                await self.membro.remove_roles(mute)
+                await self.membro.remove_roles(mute2)
 
                 return
 
@@ -93,11 +100,11 @@ class adv(discord.ui.View):
 
                 await advdb(self.membro,2,'None')
 
-                await advdb(self.membro,1,self.motivo)
+                await advdb(self.membro,1,f'{self.motivo} {dt}')
                 
                 await self.membro.add_roles(role1, reason = self.motivo)
 
-                await self.membro.add_roles(mute, reason = 'Adv1')
+                await self.membro.add_roles(mute2, reason = 'Adv1')
 
                 await interaction.message.delete()
 
@@ -107,7 +114,7 @@ class adv(discord.ui.View):
 
                 await asyncio.sleep(3600)
 
-                await self.membro.remove_roles(mute)
+                await self.membro.remove_roles(mute2)
 
                 return
         else:
@@ -120,7 +127,6 @@ class adv(discord.ui.View):
         if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
         
             await interaction.message.delete()
-
 
             self.stop()
 
@@ -285,6 +291,7 @@ class adonticket(discord.ui.View):
     async def close(self,  button: discord.ui.Button, interaction: discord.Interaction):
 
         if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['staff']) not in interaction.user.roles:
+
             return
 
         member = self.membro
@@ -493,8 +500,11 @@ class cmdstf(discord.ui.View):
     async def ausente(self, button: discord.ui.Button, interaction: discord.Interaction):
 
         data_e_hora_atuais = datetime.now()
+
         fuso_horario = timezone('America/Sao_Paulo')
+
         data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
+
         dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
 
         def check(m):
@@ -582,8 +592,6 @@ class cmdstf(discord.ui.View):
 
                 await msg2.delete()
 
-                print(msg2.content)
-
                 e = discord.Embed(title = 'Ban')
 
                 e.add_field(name = 'Pessoa a banir', value = f'{membro.mention}')
@@ -591,8 +599,6 @@ class cmdstf(discord.ui.View):
                 e.add_field(name = 'Motivo', value = msg2.content)
 
                 await channel.send(embed = e, view = ban(self.bot,membro,msg2.content, interaction.user))
-
-                print(msg.content, msg2.content)
 
             except:
                 print('error')
@@ -653,8 +659,6 @@ class cmdstf(discord.ui.View):
                         await id.delete()
 
                         await msg2.delete()
-
-                        print(msg2.content)
 
                         e = discord.Embed(title = 'Advertencia')
 
