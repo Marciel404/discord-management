@@ -30,7 +30,6 @@ class adccap(discord.ui.View):
         e.add_field(name = 'Foi adicionado a', value = self.membro.mention)
 
         e.add_field(name = 'Aprovado por', value = interaction.user.mention, inline = False)
-        
 
         if admin in interaction.user.roles:
 
@@ -89,7 +88,6 @@ class adccargo(discord.ui.View):
         e.add_field(name = 'Foi adicionado a', value = self.membro.mention)
 
         e.add_field(name = 'Aprovado por', value = interaction.user.mention, inline = False)
-        
 
         if admin in interaction.user.roles \
         or mod in interaction.user.roles:
@@ -186,7 +184,7 @@ class cargoevento(discord.ui.View):
 
 
             await interaction.response.send_message('Mande no chat o id da pessoa a receber o cargo', ephemeral = True)
-
+            
             def check50(m):
                 return m.content and m.author.id == interaction.user.id
 

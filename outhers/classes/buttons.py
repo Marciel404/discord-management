@@ -594,7 +594,9 @@ class cmdstf(discord.ui.View):
                 e = discord.Embed(title = 'Ban')
 
                 e.add_field(name = 'Pessoa a banir', value = f'{membro.mention}')
+
                 e.add_field(name = 'Quem baniu', value = interaction.user.mention, inline = False)
+                
                 e.add_field(name = 'Motivo', value = msg2.content)
 
                 await channel.send(embed = e, view = ban(self.bot,membro,msg2.content, interaction.user))

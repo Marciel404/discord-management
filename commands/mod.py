@@ -347,7 +347,7 @@ async def tck(self):
     color = 0x4B0082)
 
     e.set_footer(text = 'Staff Hayleng', icon_url = guild.icon)
-    
+
     e.set_image(url = 'https://media.giphy.com/media/sKezAGnlMZmLnwXwP8/giphy.gif')
 
     channel = self.bot.get_channel(configData['chats']['ticket'])
