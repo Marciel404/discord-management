@@ -1,4 +1,4 @@
-from outhers.info.fi import *
+from ..info.fi import *
 
 cluster = MongoClient(configData['mongokey'])
 

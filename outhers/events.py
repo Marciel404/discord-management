@@ -1,9 +1,11 @@
 from outhers.info.fi import *
 from commands.mod import *
-from outhers.classes.verify import *
+from .classes.verify import *
 
 class events(commands.Cog):
+
     def __init__(self, bot:commands.Bot):
+
         self.bot = bot
 
     @commands.Cog.listener()
@@ -38,9 +40,9 @@ class events(commands.Cog):
 
         if message.author == self.bot.user: return
 
-        if message.author.bot: return
-        
-        elif message.mention_everyone:return
+        elif message.author.bot: return
+
+        elif message.mention_everyone: return
 
     @commands.Cog.listener()
     async def on_message_edit(self, antes:discord.Message, depois: discord.Message):
@@ -50,7 +52,7 @@ class events(commands.Cog):
         fuso_horario = timezone('America/Sao_Paulo')
 
         data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
-        
+
         dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
 
         if antes.author.bot:
@@ -61,7 +63,9 @@ class events(commands.Cog):
 
         e = discord.Embed(
 
-            description = f'Mensagem enviada por {antes.author.mention} foi editada em {antes.channel.mention}'
+            description = f'Mensagem enviada por {antes.author.mention} foi editada em {antes.channel.mention}',
+
+            color = 0xfff000
 
         )
         e.add_field(name = 'Antiga:', value = f'{antes.content}', inline=False)
@@ -93,7 +97,9 @@ class events(commands.Cog):
 
         e = discord.Embed(
 
-            description = f'Mensagem enviada por {message.author.mention} foi deletada em {message.channel.mention}'
+            description = f'Mensagem enviada por {message.author.mention} foi deletada em {message.channel.mention}',
+
+            color = 0xff0000
 
         )
         e.add_field(name = 'Mensagem:', value = f'{message.content}', inline=False)
@@ -118,9 +124,12 @@ class events(commands.Cog):
         channel = self.bot.get_channel(configData['logs']['membros'])
 
         if antes.nick != depois.nick:
+
             e = discord.Embed(
 
-            description = f'{antes.mention} editou o apelido'
+            description = f'{antes.mention} editou o apelido',
+
+            color = 0xfff000
             
         )
             e.add_field(name = 'Apelido antigo:', value = f'{antes.display_name}', inline=False)
@@ -153,9 +162,12 @@ class events(commands.Cog):
         channel = self.bot.get_channel(configData['logs']['membros'])
 
         if antes.name != depois.name:
+
             e = discord.Embed(
 
-            description = f'{antes.mention} editou o nick'
+            description = f'{antes.mention} editou o nome',
+
+            color = 0xfff000
         )
             e.add_field(name = 'Nome antigo:', value = f'{antes.name}', inline=False)
 
@@ -179,9 +191,9 @@ class events(commands.Cog):
         dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
 
         channel = self.bot.get_channel(configData['logs']['call'])
-        
+
         channel2 = self.bot.get_channel(configData['logs']['microfone'])
-        
+
         guild = member.guild
 
         if before.channel != after.channel:
@@ -192,7 +204,7 @@ class events(commands.Cog):
                 or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['nv100']) in member.roles \
                 or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['staff']['staff']) in member.roles \
                 or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['levelup']) in member.roles:
-                
+
                     role1 = discord.utils.get(member.guild.roles, id = configData['roles']['outras']['callpv'])
 
                     await member.add_roles(role1)
@@ -210,7 +222,7 @@ class events(commands.Cog):
                     channel_type = discord.ChannelType.voice,
 
                     category = discord.utils.get(member.guild.categories, id = configData['catego']['callpv']),
-                    
+
                     overwrites = overwrites)
 
                     call = discord.utils.get(member.guild.channels, name = f'Call Privada de {member.name}')
@@ -220,7 +232,7 @@ class events(commands.Cog):
                     await member.move_to(call)
 
                     return
-                    
+
                 e = discord.Embed(
 
                 description = f'{member.mention} entrou no chat `{after.channel}`',
@@ -228,6 +240,7 @@ class events(commands.Cog):
                 color = 0x00ff19
 
                 )
+
                 e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
 
                 e.set_footer(text = f'生 HAYLENG 死 às {dt}')
@@ -245,7 +258,7 @@ class events(commands.Cog):
                 await member.remove_roles(role1)
 
                 await before.channel.delete()
-            
+
             if after.channel == None:
 
                 e = discord.Embed(
@@ -255,6 +268,7 @@ class events(commands.Cog):
                 color = 0xff0000
 
                 )
+
                 e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
 
                 e.set_footer(text = f'生 HAYLENG 死 às {dt}')
@@ -277,7 +291,7 @@ class events(commands.Cog):
                     guild.default_role: discord.PermissionOverwrite(connect=False),
 
                     member: discord.PermissionOverwrite(connect = True)
-                
+
                 }
 
                 await guild._create_channel(name = f'Call Privada de {member.name}',

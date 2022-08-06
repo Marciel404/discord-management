@@ -1,7 +1,6 @@
-import discord, asyncio
-from outhers.info.fi import configData
-from outhers.db.mod import *
-from outhers.classes.selectmenus import *
+from ..info.fi import configData
+from ..db.mod import *
+from ..classes.selectmenus import *
 
 class adv(discord.ui.View):
 

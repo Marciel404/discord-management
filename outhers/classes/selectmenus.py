@@ -1,5 +1,4 @@
-import discord
-from outhers.info.fi import configData
+from ..info.fi import configData, discord
 
 class adccap(discord.ui.View):
 

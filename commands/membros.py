@@ -1,7 +1,7 @@
 from outhers.info.fi import *
 
 class Membros(commands.Cog):
-    
+
     def __init__(self, bot:commands.Bot):
 
         self.bot = bot

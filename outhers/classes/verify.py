@@ -1,4 +1,4 @@
-from outhers.db.mod import *
+from ..db.mod import *
 
 async def verfyadv(self, member):
 
@@ -25,13 +25,13 @@ async def verfyadv(self, member):
             await  member.add_roles(role1, role2, role3)
 
             return
-        
+
         if adv2 != 'None':
 
             await  member.add_roles(role1, role2)
 
             return
-        
+
         if adv1 != 'None':
 
             await  member.add_roles(role1)
