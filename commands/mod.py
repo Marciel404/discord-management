@@ -1,9 +1,8 @@
 from outhers.info.fi import *
 from outhers.classes.buttons import *
-from outhers.db.mod import *
 
 class Mod(commands.Cog):
-    
+
     def __init__(self, bot:commands.Bot):
 
         self.bot = bot
@@ -64,6 +63,7 @@ class Mod(commands.Cog):
             img = ''
 
         if msg == None:
+
             msg = ''
 
         e = discord.Embed(title = title, description = msg, colour = 0x4B0082)
@@ -96,7 +96,7 @@ class Mod(commands.Cog):
             await ctx.response.send_message('O limite maximo é de 100 mensagens')
 
             return
-            
+
         elif quantidade == 0:
 
             await ctx.response.send_message('Você precisa escolher uma quantidade de mensagens, a quantidade maxima é 1000 mensagens')
@@ -174,6 +174,7 @@ class Mod(commands.Cog):
     async def veradv(self, ctx, membro: discord.Member):
 
         myquery = { "_id": membro.id}
+
         if (mute.count_documents(myquery) == 1):
 
             cmdl = f'''{ctx.author} usou o comando {ctx.command.name} e viu as advertencias de {membro.display_name}'''
@@ -197,6 +198,7 @@ class Mod(commands.Cog):
                 return
 
             if adv3 != 'None':
+
                 e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}\nAdv2: {adv2}\nAdv3: {adv3}')
 
                 await ctx.respond(embed = e, ephemeral = True)
@@ -204,19 +206,21 @@ class Mod(commands.Cog):
                 return
 
             if adv2 != 'None':
+
                 e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}\nAdv2: {adv2}')
 
                 await ctx.respond(embed = e, ephemeral = True)
 
                 return
-            
+
             if adv1 != 'None':
+
                 e = discord.Embed(title = f'Advertencias de {membro.name}#{membro.discriminator}', description = f'Adv1: {adv1}')
 
                 await ctx.respond(embed = e, ephemeral = True)
 
                 return
-        
+
         await ctx.respond('Esse membro não Possui advertencia', ephemeral = True)
 
         cmdl = f'''{ctx.author} usou o comando {ctx.command.name} e viu as advertencias de {membro.display_name}'''

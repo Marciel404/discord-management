@@ -35,7 +35,7 @@ class Membros(commands.Cog):
         if membro.voice.channel != discord.utils.get(ctx.guild.channels, id = configData['calls']['espera']):
 
             await ctx.respond(f'{membro.mention} não está no canal de espera', ephemeral = True)
-            
+
             return
 
         if membro == ctx.author:
@@ -48,7 +48,6 @@ class Membros(commands.Cog):
 
         await ctx.respond(f'{membro.mention} movido para {call}', ephemeral = True)
 
-    
     @discord.slash_command(name = 'dsc', description = 'Desconecta um membro da sua call privada')
     @discord.option(name = 'membro', description = 'Escolha o membro para desconectar')
     async def dsc(self, ctx, membro: discord.Member = None):

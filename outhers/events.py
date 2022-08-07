@@ -315,6 +315,7 @@ class events(commands.Cog):
             color = 0xfff000
 
             )
+            
             e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
 
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
@@ -326,9 +327,9 @@ class events(commands.Cog):
             e = discord.Embed(
 
             description = f'{member.mention} mutou o fone no `{after.channel}`',
-            
+
             color = 0xfff000
-            
+
             )
 
             e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
@@ -342,9 +343,9 @@ class events(commands.Cog):
             e = discord.Embed(
 
             description = f'{member.mention} desmutou o fone no `{after.channel}`',
-            
+
             color = 0x00ff19
-            
+
             )
 
             e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
@@ -358,9 +359,9 @@ class events(commands.Cog):
             e = discord.Embed(
 
             description = f'{member.mention} desmutou o microfone no `{after.channel}`',
-            
+
             color = 0x00ff19
-            
+
             )
 
             e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
@@ -374,9 +375,9 @@ class events(commands.Cog):
             e = discord.Embed(
 
             description = f'{member.mention} mutou o microfone no `{after.channel}`',
-            
+
             color = 0xfff000
-            
+
             )
 
             e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
@@ -390,9 +391,9 @@ class events(commands.Cog):
             e = discord.Embed(
 
             description = f'{member.mention} ativou o video no `{after.channel}`',
-            
+
             color = 0x00ff19
-            
+
             )
 
             e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
@@ -400,15 +401,15 @@ class events(commands.Cog):
             e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
             await channel2.send(embed = e)
-        
+
         elif before.self_video:
 
             e = discord.Embed(
 
             description = f'{member.mention} desativou o video no `{after.channel}`',
-            
+
             color = 0xfff000
-            
+
             )
 
             e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
@@ -422,9 +423,9 @@ class events(commands.Cog):
             e = discord.Embed(
 
             description = f'{member.mention} começou a transmitir no `{after.channel}`',
-            
+
             color = 0x00ff19
-            
+
             )
 
             e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
@@ -438,9 +439,9 @@ class events(commands.Cog):
             e = discord.Embed(
 
             description = f'{member.mention} parou de transmitir no `{after.channel}`',
-            
+
             color = 0xfff000
-            
+
             )
 
             e.set_author(name = f'{member.name}#{member.discriminator}', icon_url = member.display_avatar)
