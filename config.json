@@ -109,7 +109,15 @@
 
     "ausencia":,
 
-    "cmdstf":
+    "cmdstf":,
+    
+    "ids": {
+      
+      "cmdstf":,
+    
+      "tck":
+    
+    }
 
   },
 
