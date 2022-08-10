@@ -504,7 +504,7 @@ class cmdstf(discord.ui.View):
 
         data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
 
-        dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
+        dt = data_e_hora_sao_paulo.strftime('%d/%m/%Y')
 
         def check(m):
             return m.content and m.author.id == interaction.user.id
@@ -534,6 +534,8 @@ class cmdstf(discord.ui.View):
 
                 await msg.delete()
 
+                await ausendb(interaction.user,msg.content,dt)
+
                 return
 
             if role in interaction.user.roles:
@@ -543,6 +545,8 @@ class cmdstf(discord.ui.View):
                 await ausente.send(f'{interaction.user.name} Saiu da ausencia às {dt}')
 
                 await channel.send('Você não está mais ausente', delete_after = 2)
+
+                await desausendb(interaction.user)
 
                 return
         

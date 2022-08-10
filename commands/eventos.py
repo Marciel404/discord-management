@@ -107,9 +107,7 @@ class eventos(commands.Cog):
     @discord.option(name = 'membro', description = 'mencione o membro')
     async def verpontos(self, ctx, membro: discord.Member = None):
 
-        myquery = {"_id": membro.id}
-
-        if (points.count_documents(myquery) == 1):
+        if (points.count_documents({"_id": membro.id}) == 1):
 
             pt = points.find_one({"_id": membro.id})
 
