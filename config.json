@@ -57,6 +57,14 @@
 
         "div":
 
+      },
+
+      "equipemidia": {
+
+        "chefemidia":,
+
+        "equipemidia":
+
       }
 
     },
@@ -109,15 +117,7 @@
 
     "ausencia":,
 
-    "cmdstf":,
-    
-    "ids": {
-      
-      "cmdstf":,
-    
-      "tck":
-    
-    }
+    "cmdstf":
 
   },
 
