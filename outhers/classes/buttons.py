@@ -1,3 +1,4 @@
+from os import listdir
 from ..info.fi import configData
 from ..db.mod import *
 from ..classes.selectmenus import *
@@ -334,6 +335,14 @@ class ticket(discord.ui.View):
     @discord.ui.button(label = '🛎 Criar ticket', style = discord.ButtonStyle.blurple)
     async def confirm(self,  button: discord.ui.Button, interaction: discord.Interaction):
 
+        data_e_hora_atuais = datetime.now()
+
+        fuso_horario = timezone('America/Sao_Paulo')
+
+        data_e_hora_sao_paulo = data_e_hora_atuais.astimezone(fuso_horario)
+
+        dt = data_e_hora_sao_paulo.strftime('%d/%m/%Y')
+
         guild = interaction.guild
 
         Chat = discord.utils.get(guild.channels, name=f'ticket-{interaction.user.id}')
@@ -366,6 +375,18 @@ class ticket(discord.ui.View):
 
                 }
 
+            for file in os.listdir('./tickets'):
+
+                if file.endswith('.txt'):
+
+                    if file.startswith(f'{ticket}'):
+
+                        os.remove(f"./tickets/{ticket}.txt")
+
+            with open(f'./tickets/{ticket}.txt', 'a') as f:
+
+                f.write(f'Ticket de {interaction.user.name} {dt}')
+
             channel = await guild.create_text_channel(name=ticket, 
             overwrites = overwrites, 
             category = discord.utils.get(interaction.guild.categories, id = configData['catego']['ticket']))
@@ -378,7 +399,7 @@ class ticket(discord.ui.View):
         
         else:
 
-            await interaction.send_message('Ticket já existente, encerre o ultimo para criar outro', ephemeral = True)
+            await interaction.response.send_message('Ticket já existente, encerre o ultimo para criar outro', ephemeral = True)
 
 class kick(discord.ui.View):
     

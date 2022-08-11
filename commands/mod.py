@@ -333,7 +333,6 @@ class Mod(commands.Cog):
     @discord.slash_command(name = 'verausentes', description = 'Mostra todos os membros em estado de ausente')
     async def verausente(self, ctx):
 
-
         if ausen.find_one({"_id": 'validador'})['valor'] == 1:
 
             await ctx.respond('Aqui está os ausentes', ephemeral = True)
@@ -345,6 +344,18 @@ class Mod(commands.Cog):
         else:
 
             await ctx.respond('Ninguem está ausente no momento', ephemeral = True)
+
+    @discord.slash_command(name = 'verticket', description = 'Mostra as mensagens do ultimo ticket de um membro')
+    @discord.option(name = 'membro', description = 'Mostra as mensagens o ultimo ticket da pessoa')
+    async def verticket(self, ctx, membro: discord.Member):
+
+        try:
+
+            await ctx.respond(file = discord.File('./tickets/ticket-{}.txt'.format(membro.id),f'Ticket de {membro.name}.txt'), ephemeral = True)
+
+        except:
+
+            await ctx.respond('Esse membro ainda não abriu um ticket', ephemeral = True)
 
 async def stf(self):
 

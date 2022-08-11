@@ -44,6 +44,79 @@ class events(commands.Cog):
 
         elif message.mention_everyone: return
 
+        if 'ticket-' in message.channel.name:
+
+            with open(f'./tickets/{message.channel.name}.txt', 'a') as f:
+
+                f.write(f'\n{message.author.name}: {message.content}')
+
+        data_e_hora_atuais = datetime.now()
+
+        fuso_horario = timezone('America/Sao_Paulo')
+
+        x = data_e_hora_atuais.astimezone(fuso_horario)
+
+        if x.weekday() == 0:
+
+            channel = self.bot.get_channel(configData['chats']['resumsemana'])
+
+            verifi = discord.utils.get(message.guild.roles, id = configData['roles']['outras']['verificado'])
+
+            naoverifi = discord.utils.get(message.guild.roles, id = configData['roles']['outras']['naoverificado'])
+
+            mod = discord.utils.get(message.guild.roles, id = configData['roles']['staff']['mod'])
+
+            overwrites = {
+
+                verifi: discord.PermissionOverwrite(send_messages=True),
+
+                mod: discord.PermissionOverwrite(send_messages=True),
+
+                naoverifi: discord.PermissionOverwrite(read_messages=False),
+
+            }
+
+            if channel.overwrites == overwrites:
+
+                return
+
+            await channel.edit(overwrites = overwrites)
+
+            await channel.send(
+f'''
+Chat aberto!!! 
+Vem contar algo sobre o que rolou na sua semana 😃 
+||{verifi.mention}||
+''')
+
+        else:
+
+            channel = self.bot.get_channel(configData['chats']['resumsemana'])
+
+            verifi = discord.utils.get(message.guild.roles, id = configData['roles']['outras']['verificado'])
+
+            naoverifi = discord.utils.get(message.guild.roles, id = configData['roles']['outras']['naoverificado'])
+
+            mod = discord.utils.get(message.guild.roles, id = configData['roles']['staff']['mod'])
+
+            overwrites = {
+
+                verifi: discord.PermissionOverwrite(send_messages=False),
+
+                naoverifi: discord.PermissionOverwrite(read_messages=False),
+
+                mod: discord.PermissionOverwrite(send_messages=True),
+
+            }
+
+            if channel.overwrites == overwrites:
+
+                return
+
+            await channel.edit(overwrites = overwrites)
+
+            await channel.send(f'E o chat está fechado novamente galera, deixando claro q próxima segunda ele volta😁')
+
     @commands.Cog.listener()
     async def on_message_edit(self, antes:discord.Message, depois: discord.Message):
 

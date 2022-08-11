@@ -518,6 +518,92 @@ class cargodiv(discord.ui.View):
 
             self.stop()
 
+class cargomidia(discord.ui.View):
+
+    def __init__(self, bot , timeout = 300):
+
+        self.bot = bot
+
+        super().__init__(timeout=timeout)
+
+    @discord.ui.select(
+        placeholder = "Cargos",
+        options = [
+            discord.SelectOption(
+                label = 'Lider de midia',
+                description = 'Adiciona o cargo de lider de midia',
+            ),
+            discord.SelectOption(
+                label = 'Equipe de midia',
+                description = 'Adiciona o cargo de equipe de midia'
+            )
+        ]
+    )
+    async def select_callback(self,  select, interaction : discord.Interaction):
+
+        channel = self.bot.get_channel(configData['chats']['cmdstf'])
+
+        admin = discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin'])
+            
+        mod = discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod'])
+
+        chefemidia = discord.utils.get(interaction.guild.roles, id = configData['roles']['equipes']['equipemidia']['chefemidia'])
+
+        equipemidia = discord.utils.get(interaction.guild.roles, id = configData['roles']['equipes']['equipemidia']['equipemidia'])
+
+        if select.values[0] == 'Lider de midia':
+
+            if admin in interaction.user.roles \
+            or mod in interaction.user.roles:
+
+                await interaction.response.send_message('Mande no chat o id da pessoa a receber o cargo', ephemeral = True)
+
+                def check50(m):
+                    return m.content and m.author.id == interaction.user.id
+
+                msg50 = await self.bot.wait_for('message', check = check50, timeout = 130)
+
+                membro = interaction.guild.get_member(int(msg50.content))
+
+                await msg50.delete()
+
+                e = discord.Embed(title = 'Adicionar cargo de Chefe de eventos')
+
+                e.add_field(name = 'Quem vai ser adicionado o cargo', value = f'{membro.mention}')
+                e.add_field(name = 'Quem adicionou ', value = interaction.user.mention, inline = False)
+
+                await channel.send(embed = e, view = adccap(self.bot, membro, chefemidia, interaction.user))
+
+                self.stop()
+
+            else:
+
+                interaction.response.send_message('Você não tem permissão para usar isto', ephemeral = True)
+
+                return
+
+        if select.values[0] == 'Equipe de midia':
+
+            await interaction.response.send_message('Mande no chat o id da pessoa a receber o cargo', ephemeral = True)
+
+            def check50(m):
+                return m.content and m.author.id == interaction.user.id
+
+            msg50 = await self.bot.wait_for('message', check = check50, timeout = 130)
+
+            membro = interaction.guild.get_member(int(msg50.content))
+
+            await msg50.delete()
+
+            e = discord.Embed(title = 'Adicionar cargo de Chefe de eventos')
+
+            e.add_field(name = 'Quem vai ser adicionado o cargo', value = f'{membro.mention}')
+            e.add_field(name = 'Quem adicionou ', value = interaction.user.mention, inline = False)
+
+            await channel.send(embed = e, view = adccargo(self.bot, membro, equipemidia, interaction.user))
+
+            self.stop()
+
 class cargos1(discord.ui.View):
 
     def __init__(self, bot, timeout = 300):
@@ -545,6 +631,10 @@ class cargos1(discord.ui.View):
                 label = 'Divulgação',
                 description = 'Cargos da equipe de call'
             ),
+            discord.SelectOption(
+                label = 'Midia',
+                description = 'Cargos da equipe de Midia'
+            )
         ]
     )
     async def select_callback(self,  select, interaction : discord.Interaction):
@@ -556,6 +646,8 @@ class cargos1(discord.ui.View):
         capchat = discord.utils.get(interaction.guild.roles, id = configData['roles']['equipes']['equipechat']['liderchat'])
 
         capdiv = discord.utils.get(interaction.guild.roles, id = configData['roles']['equipes']['equipediv']['promoters'])
+
+        capmidia = discord.utils.get(interaction.guild.roles, id = configData['roles']['equipes']['equipemidia']['chefemidia'])
 
         admin = discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin'])
             
@@ -616,6 +708,22 @@ class cargos1(discord.ui.View):
             or mod in interaction.user.roles:
 
                 await interaction.response.send_message('Qual cargo vai adicionar?', ephemeral = True, view = cargodiv(self.bot))
+
+                self.stop()
+
+            else:
+
+                await interaction.response.send_message('Você não tem permissão para usar isto', ephemeral = True)
+
+                return
+
+        elif select.values[0] == 'Midia':
+
+            if capmidia in interaction.user.roles \
+            or admin in interaction.user.roles \
+            or mod in interaction.user.roles:
+
+                await interaction.response.send_message('Qual cargo vai adicionar?', ephemeral = True, view = cargomidia(self.bot))
 
                 self.stop()
 
