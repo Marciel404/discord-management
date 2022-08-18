@@ -3,12 +3,10 @@ import os
 import json
 import aiohttp
 import asyncio
-import requests
 
-from discord.ext import commands
+from discord.ext import commands, tasks
 from pytz import timezone
 from datetime import datetime
-from discord.ext import commands
 from pymongo import MongoClient
 
 if os.path.exists((os.getcwd() + "/config.json")):
