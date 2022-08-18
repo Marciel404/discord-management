@@ -43,10 +43,6 @@ async def verfypoints(self, member):
 
         p = points.find_one({"_id": member.id})
 
-        role = discord.utils.get(member.guild.roles, name = f'{p["pontos"]}🏆')
+        if discord.utils.get(member.guild.roles, name = f'{p["pontos"]}🏆') in member.guild.roles:
 
-        await member.add_roles(role)
-
-        
-
-        
+            await member.add_roles(discord.utils.get(member.guild.roles, name = f'{p["pontos"]}🏆'))

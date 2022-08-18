@@ -1,4 +1,4 @@
-from outhers.info.fi import *
+from .info.fi import *
 from commands.mod import *
 from .info.verify import *
 

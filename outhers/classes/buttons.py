@@ -422,7 +422,7 @@ class cmdstf(discord.ui.View):
         or discord.utils.get(interaction.guild.roles, id = configData['roles']['equipes']['equipediv']['promoters']) in interaction.user.roles \
         or discord.utils.get(interaction.guild.roles, id = configData['roles']['equipes']['equipemidia']['chefemidia']) in interaction.user.roles:
 
-            await interaction.response.send_message('Em qual equipe vai adicionar o cargo?', ephemeral = True, view = cargos1(self.bot))
+            await interaction.response.send_message('Oque ira fazer?', ephemeral = True, view = adcrmv(self.bot))
 
         else:
         

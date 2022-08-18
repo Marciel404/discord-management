@@ -1,4 +1,4 @@
-from outhers.info.fi import *
+from .info.fi import *
 
 class tasks(commands.Cog):
 
