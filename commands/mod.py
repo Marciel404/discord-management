@@ -361,17 +361,31 @@ async def stf(self):
 
     channel = self.bot.get_channel(configData['chats']['cmdstf'])
 
-    mensagem = await channel.fetch_message(int(configData['chats']['ids']['cmdstf']))
+    await channel.purge(limit = 1)
 
-    await mensagem.edit(view = cmdstf(self.bot))
+    await channel.send(view = cmdstf(self.bot))
 
 async def tck(self):
 
+    guild = self.bot.get_guild(configData["guild"])
+
+    e = discord.Embed(
+
+    title = 'Precisa de ajuda? Reaja a 🛎 para abrir um ticket',
+
+    description = 'Com os tickets você pode reportar algo ou tirar alguma dúvida.',
+
+    color = 0x4B0082)
+
+    e.set_footer(text = 'Staff Hayleng', icon_url = guild.icon)
+
+    e.set_image(url = 'https://media.giphy.com/media/sKezAGnlMZmLnwXwP8/giphy.gif')
+
     channel = self.bot.get_channel(configData['chats']['ticket'])
 
-    mensagem = await channel.fetch_message(int(configData['chats']['ids']['tck']))
+    await channel.purge(limit=1)
 
-    await mensagem.edit(view = ticket())
+    await channel.send(embed = e, view = ticket())
 
 def setup(bot:commands.Bot):
     bot.add_cog(Mod(bot))
