@@ -1,4 +1,6 @@
-from outhers.info.fi import *
+import discord
+
+from discord.ext import commands
 from outhers.db.evento import *
 
 class eventos(commands.Cog):

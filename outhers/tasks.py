@@ -1,4 +1,9 @@
-from .info.fi import *
+import discord
+
+from pytz import timezone
+from datetime import datetime
+from discord.ext import commands, tasks
+from config import  configData
 
 class tasks(commands.Cog):
 
@@ -16,6 +21,62 @@ class tasks(commands.Cog):
         fuso_horario = timezone('America/Sao_Paulo')
 
         x = data_e_hora_atuais.astimezone(fuso_horario)
+
+        if x.weekday() == 4:
+
+            channel = self.bot.get_channel(configData['chats']['sugestsemana'])
+
+            verifi = discord.utils.get(guild.roles, id = configData['roles']['outras']['verificado'])
+
+            naoverifi = discord.utils.get(guild.roles, id = configData['roles']['outras']['naoverificado'])
+
+            mod = discord.utils.get(guild.roles, id = configData['roles']['staff']['mod'])
+
+            overwrites = {
+
+                verifi: discord.PermissionOverwrite(send_messages=True),
+
+                mod: discord.PermissionOverwrite(send_messages=True),
+
+                naoverifi: discord.PermissionOverwrite(read_messages=False),
+
+            }
+
+            if channel.overwrites != overwrites:
+
+                await channel.edit(overwrites = overwrites)
+
+                await channel.send(
+    f'''
+Chat aberto!!! 
+Venha indicar algo para os outros membros😃
+    ''')
+
+        else:
+
+            channel = self.bot.get_channel(configData['chats']['sugestsemana'])
+
+            verifi = discord.utils.get(guild.roles, id = configData['roles']['outras']['verificado'])
+
+            naoverifi = discord.utils.get(guild.roles, id = configData['roles']['outras']['naoverificado'])
+
+            mod = discord.utils.get(guild.roles, id = configData['roles']['staff']['mod'])
+
+            overwrites = {
+
+                verifi: discord.PermissionOverwrite(send_messages=False),
+
+                naoverifi: discord.PermissionOverwrite(read_messages=False),
+
+                mod: discord.PermissionOverwrite(send_messages=True),
+
+            }
+
+            if channel.overwrites != overwrites:
+
+                await channel.edit(overwrites = overwrites)
+
+                await channel.send(f'E o chat está fechado novamente galera, deixando claro que semana que vem ele volta😁')
 
         if x.weekday() == 0:
 
@@ -37,11 +98,7 @@ class tasks(commands.Cog):
 
             }
 
-            if channel.overwrites == overwrites:
-
-                None
-            
-            else:
+            if channel.overwrites != overwrites:
 
                 await channel.edit(overwrites = overwrites)
 
@@ -72,15 +129,11 @@ Vem contar algo sobre o que rolou na sua semana 😃
 
             }
 
-            if channel.overwrites == overwrites:
-
-                None
-            
-            else:
+            if channel.overwrites != overwrites:
 
                 await channel.edit(overwrites = overwrites)
 
-                await channel.send(f'E o chat está fechado novamente galera, deixando claro q próxima segunda ele volta😁')
+                await channel.send(f'E o chat está fechado novamente galera, deixando claro que semana que vem ele volta😁')
 
     @commands.Cog.listener()
     async def on_ready(self):

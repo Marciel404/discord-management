@@ -1,4 +1,7 @@
-from outhers.info.fi import *
+import discord, os, json
+
+from discord.ext import commands
+from config import configData
 
 intents = discord.Intents.all()
 
@@ -24,6 +27,6 @@ for filename in os.listdir('./outhers'):
 
     if filename.endswith('.py'):
 
-        client.load_extension('outhers.{0}'.format(filename[:-3]))
+        client.load_extension(f'outhers.{filename[:-3]}')
 
 client.run(configData['token'])

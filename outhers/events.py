@@ -1,4 +1,4 @@
-from .info.fi import *
+from discord.ext import commands
 from commands.mod import *
 from .info.verify import *
 
@@ -11,11 +11,11 @@ class events(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
 
+        await self.bot.change_presence(status=discord.Status.idle)
+
         await tck(self)
 
         await stf(self)
-
-        await self.bot.change_presence(status=discord.Status.idle)
 
         print(f'EU entrei como {self.bot.user}')
 
@@ -204,44 +204,9 @@ class events(commands.Cog):
 
         channel2 = self.bot.get_channel(configData['logs']['microfone'])
 
-        guild = member.guild
-
         if before.channel != after.channel:
 
             if before.channel == None:
-
-                if after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['ntb']) in member.roles \
-                or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['nv100']) in member.roles \
-                or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['staff']['staff']) in member.roles \
-                or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['levelup']) in member.roles:
-
-                    role1 = discord.utils.get(member.guild.roles, id = configData['roles']['outras']['callpv'])
-
-                    await member.add_roles(role1)
-
-                    overwrites = {
-
-                        guild.default_role: discord.PermissionOverwrite(connect=False),
-
-                        member: discord.PermissionOverwrite(connect = True)
-                    
-                    }
-
-                    await guild._create_channel(name = f'Call Privada de {member.name}',
-
-                    channel_type = discord.ChannelType.voice,
-
-                    category = discord.utils.get(member.guild.categories, id = configData['catego']['callpv']),
-
-                    overwrites = overwrites)
-
-                    call = discord.utils.get(member.guild.channels, name = f'Call Privada de {member.name}')
-
-                    await asyncio.sleep(1)
-
-                    await member.move_to(call)
-
-                    return
 
                 e = discord.Embed(
 
@@ -259,16 +224,6 @@ class events(commands.Cog):
 
                 return
 
-            call = discord.utils.get(member.guild.channels, name = f'Call Privada de {member.name}')
-
-            if before.channel == call:
-
-                role1 = discord.utils.get(member.guild.roles, id = configData['roles']['outras']['callpv'])
-
-                await member.remove_roles(role1)
-
-                await before.channel.delete()
-
             if after.channel == None:
 
                 e = discord.Embed(
@@ -284,37 +239,6 @@ class events(commands.Cog):
                 e.set_footer(text = f'生 HAYLENG 死 às {dt}')
 
                 await channel.send(embed = e)
-
-                return
-
-            if after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['ntb']) in member.roles \
-            or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['nv100']) in member.roles \
-            or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['staff']['staff']) in member.roles \
-            or after.channel.id == configData['calls']['espera'] and discord.utils.get(member.guild.roles, id = configData['roles']['outras']['levelup']) in member.roles:
-
-                role1 = discord.utils.get(member.guild.roles, id = configData['roles']['outras']['callpv'])
-
-                await member.add_roles(role1)
-
-                overwrites = {
-
-                    guild.default_role: discord.PermissionOverwrite(connect=False),
-
-                    member: discord.PermissionOverwrite(connect = True)
-
-                }
-
-                await guild._create_channel(name = f'Call Privada de {member.name}',
-
-                channel_type = discord.ChannelType.voice,
-
-                category = discord.utils.get(member.guild.categories, id = configData['catego']['callpv']),
-
-                overwrites = overwrites)
-
-                await asyncio.sleep(1)
-
-                await member.move_to(call)
 
                 return
 

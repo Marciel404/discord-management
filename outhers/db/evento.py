@@ -1,4 +1,7 @@
-from ..info.fi import *
+from config import  configData
+from pymongo import MongoClient
+from pytz import timezone
+from datetime import datetime
 
 cluster = MongoClient(configData['mongokey'])
 
@@ -21,6 +24,8 @@ async def addp2(membro, ctx, up):
     dt = data_e_hora_sao_paulo.strftime('%d/%m/%Y')
 
     points.update_one({"_id": membro.id}, {"$set": {f"ponto{up}": f"adicionado {dt} por {ctx.name}"}}, upsert = True)
+
+
 
 async def rmvp(membro, pontos):
 

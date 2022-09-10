@@ -1,3 +1,6 @@
+import discord
+from config import  configData
+
 from ..db.mod import *
 from ..db.evento import *
 

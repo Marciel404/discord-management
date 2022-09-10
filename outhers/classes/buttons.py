@@ -1,6 +1,10 @@
-from ..info.fi import configData
+import discord, asyncio, os
+
+from config import  configData
 from ..db.mod import *
 from .selectmenus import *
+from pytz import timezone
+from datetime import datetime
 
 class adonticket2(discord.ui.View):
 
@@ -221,59 +225,6 @@ class kick(discord.ui.View):
             await interaction.message.delete()
 
             await interaction.response.send_message(f'Ufa, ainda bem que não tive que expulsar o {self.membro.mention}', ephemeral = True)
-
-            self.stop()
-
-        else:
-
-            await interaction.response.send_message('Você não tem permissão para usar isso', ephemeral = True)
-
-class ban(discord.ui.View):
-    
-    def __init__(self, bot, membro, motivo, ctx):
-
-        self.membro = membro
-
-        self.bot = bot
-
-        self.motivo = motivo
-
-        self.ctx = ctx
-
-        super().__init__(timeout = None)
-
-    @discord.ui.button(label = '✅', style = discord.ButtonStyle.blurple)
-    async def confirmban(self, button: discord.ui.Button, interaction: discord.Interaction):
-
-        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
-
-            l1 = self.bot.get_channel(configData['logs']['mod'])
-
-            guild = interaction.guild
-
-            E = discord.Embed(title = 'Ban', description = f'Pessoa banida: {self.membro.name} \nQuem baniu: {self.ctx.mention}\nAprovado por: {interaction.user.mention} \nmotivo: {self.motivo} \nid: {self.membro.id}')
-
-            await l1.send(embed = E)
-
-            await interaction.message.delete()
-
-            await interaction.response.send_message(f'{self.membro.name} banido com sucesso', ephemeral = True)
-
-            await guild.ban(user = self.membro ,reason = self.motivo)
-
-            self.stop()
-
-        else:
-
-            await interaction.response.send_message('Você não tem permissão para usar isso', ephemeral = True)
-
-
-    @discord.ui.button(label = '❎', style = discord.ButtonStyle.blurple)
-    async def denyban(self, button: discord.ui.Button, interaction: discord.Interaction):
-
-        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
-
-            await interaction.message.delete()
 
             self.stop()
 

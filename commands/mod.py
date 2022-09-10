@@ -1,5 +1,9 @@
-from outhers.info.fi import *
-from outhers.classes.buttons import *
+import discord
+
+from outhers.db.mod import mute, ausen
+from config import  configData
+from discord.ext import commands
+from outhers.classes.buttons import ticket, kick, cmdstf
 
 class Mod(commands.Cog):
 
@@ -47,12 +51,21 @@ class Mod(commands.Cog):
         await cmdlc.send(cmdl)
 
     @discord.slash_command(name = 'embed', description = 'Envia uma embed em um chat desejado')
-    @discord.option(name = 'canal', description = 'Escolha o chat para enviar a embed')
+    @discord.option(name = 'channel', description = 'Escolha o chat para enviar a embed')
     @discord.option(name = 'title', description = 'Escreva o titulo da embed')
-    @discord.option(name = 'img', description = 'Escolha a imagem da embed')
-    @discord.option(name = 'Motivo', description = 'Escreva o conteudo da embed')
-    @commands.has_permissions(manage_channels = True)
-    async def embed(self, ctx, canal: discord.TextChannel = None, title = None, img = None, *, msg = None):
+    @discord.option(name = 'link_image', description = 'Escolha a imagem da embed')
+    @discord.option(name = 'mention', description = 'Mencione um cargo para mencionar na embed')
+    @discord.option(name = 'content', description = 'Escreva o conteudo da embed')
+    @commands.has_guild_permissions(manage_channels = True)
+    async def embed(self, ctx, channel: discord.TextChannel = None, title = None, img = None, mention: discord.Role = None, *, content = None):
+
+        if ctx.guild == None:
+            
+            return
+
+        if channel == None:
+
+            channel = ctx.channel
 
         if title == None:
 
@@ -62,25 +75,29 @@ class Mod(commands.Cog):
 
             img = ''
 
-        if msg == None:
+        if content == None:
 
-            msg = ''
+            content = ''
 
-        e = discord.Embed(title = title, description = msg, colour = 0x4B0082)
+        if mention == None:
+
+            mention == ''
+
+        else: 
+
+            mention = mention.mention
+
+        e = discord.Embed(title = title, description = content, colour = 0x4B0082)
 
         e.set_image(url = img)
 
-        e.set_footer(text = f'Ass. {ctx.guild.name}', icon_url = ctx.guild.icon)
+        e.set_footer(text = f'{ctx.guild.name}, author: {ctx.author.name}', icon_url = ctx.guild.icon)
 
-        if canal == None:
+        channel2 = self.bot.get_channel(channel.id)
 
-            canal = ctx.channel
+        await channel2.send(mention,embed = e)
 
-        channel2 = self.bot.get_channel(canal.id)
-
-        await channel2.send(embed = e)
-
-        cmdl = f'''{ctx.author} usou o comando {ctx.command.name} e enviou uma embed no {canal.mention}'''
+        cmdl = f'''{ctx.author} usou o comando {ctx.command.name} e enviou uma embed no {channel.mention}'''
 
         cmdlc = self.bot.get_channel(configData['logs']['usocomandos'])
 
@@ -99,13 +116,13 @@ class Mod(commands.Cog):
 
         elif quantidade == 0:
 
-            await ctx.response.send_message('Você precisa escolher uma quantidade de mensagens, a quantidade maxima é 1000 mensagens')
+            await ctx.response.send_message('Você precisa escolher uma quantidade de mensagens, a quantidade maxima é 100 mensagens')
 
             return
 
         purge = await ctx.channel.purge(limit=quantidade)
 
-        await ctx.response.send_message(f"O chat teve {len(purge)} mensagens apagadas por {ctx.author.mention}")
+        await ctx.respond(f"O chat teve {len(purge)} mensagens apagadas por {ctx.author.mention}")
 
         cmdl = f'''{ctx.author} usou o comando {ctx.command.name} e apagou {len(purge)} mensagens no {ctx.channel}'''
 
@@ -229,14 +246,19 @@ class Mod(commands.Cog):
 
         await cmdlc.send(cmdl)
 
-    @discord.slash_command(name = 'editembed', description = 'edita uma embed já enviada')
-    @discord.option(name = 'channel', description = 'envie o id do canal')
-    @discord.option(name = 'messageid', description = 'envie o id da mensagem')
+    @discord.slash_command(name = 'editembed', description = 'Edita uma embed já enviada')
+    @discord.option(name = 'channel', description = 'Envie o id do canal')
+    @discord.option(name = 'embedid', description = 'Envie o id da embed')
     @discord.option(name = 'title', description = 'Escreva o titulo da embed')
     @discord.option(name = 'img', description = 'Escolha a imagem da embed')
-    @discord.option(name = 'Motivo', description = 'Escreva o conteudo da embed')
-    @commands.has_permissions(manage_channels = True)
-    async def editembed(self, ctx, channel: discord.TextChannel = None, messageid = None, title = None, img = None, *, msg = None):
+    @discord.option(name = 'mention', description = 'Mencione um cargo para mencionar na embed')
+    @discord.option(name = 'content', description = 'Escreva o conteudo da embed')
+    @commands.has_guild_permissions(manage_channels = True)
+    async def editembed(self, ctx, channel: discord.TextChannel = None, embedid = None, title = None, img = None, mention: discord.Role = None, *, content = None):
+
+        if ctx.guild == None:
+            
+            return
 
         if channel == None:
 
@@ -250,17 +272,29 @@ class Mod(commands.Cog):
 
             img = ''
 
-        mensagem = await channel.fetch_message(int(messageid))
+        if content == None:
 
-        e = discord.Embed(title = title, description = msg, colour = 0x4B0082)
+            content = ''
+
+        if mention == None:
+
+            mention == ''
+
+        else: 
+
+            mention = mention.mention
+
+        mensagem = await channel.fetch_message(int(embedid))
+
+        e = discord.Embed(title = title, description = content, colour = 0x4B0082)
 
         e.set_image(url = img)
 
-        e.set_footer(text = f'Ass. {ctx.guild.name}', icon_url = ctx.guild.icon)
+        e.set_footer(text = f'{ctx.guild.name} author: {ctx.author.name}', icon_url = ctx.guild.icon)
 
-        await mensagem.edit(embed = e)
+        await mensagem.edit(mention,embed = e)
 
-        cmdl = f'{ctx.author} usou o comando {ctx.command.name} e edtou a embed {messageid} no canal {channel.mention}'
+        cmdl = f'{ctx.author} usou o comando {ctx.command.name} e edtou a embed {embedid} no canal {channel.mention}'
 
         cmdlc = self.bot.get_channel(configData['logs']['usocomandos'])
 
@@ -361,31 +395,17 @@ async def stf(self):
 
     channel = self.bot.get_channel(configData['chats']['cmdstf'])
 
-    await channel.purge(limit = 1)
+    mensagem = await channel.fetch_message(int(configData['chats']['ids']['cmdstf']))
 
-    await channel.send(view = cmdstf(self.bot))
+    await mensagem.edit(view = cmdstf(self.bot))
 
 async def tck(self):
 
-    guild = self.bot.get_guild(configData["guild"])
-
-    e = discord.Embed(
-
-    title = 'Precisa de ajuda? Reaja a 🛎 para abrir um ticket',
-
-    description = 'Com os tickets você pode reportar algo ou tirar alguma dúvida.',
-
-    color = 0x4B0082)
-
-    e.set_footer(text = 'Staff Hayleng', icon_url = guild.icon)
-
-    e.set_image(url = 'https://media.giphy.com/media/sKezAGnlMZmLnwXwP8/giphy.gif')
-
     channel = self.bot.get_channel(configData['chats']['ticket'])
 
-    await channel.purge(limit=1)
+    mensagem = await channel.fetch_message(int(configData['chats']['ids']['tck']))
 
-    await channel.send(embed = e, view = ticket())
+    await mensagem.edit(view = ticket())
 
 def setup(bot:commands.Bot):
     bot.add_cog(Mod(bot))

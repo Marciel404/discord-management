@@ -1,4 +1,6 @@
-from ..info.fi import configData, discord
+import discord
+
+from config import  configData
 from .selectbutons import *
 
 class cargoevento(discord.ui.View):

@@ -1,3 +1,7 @@
+import discord, asyncio
+
+from pytz import timezone
+from datetime import datetime
 from ..db.mod import *
 
 class adcadv(discord.ui.View):
@@ -25,7 +29,8 @@ class adcadv(discord.ui.View):
         
         dt = data_e_hora_sao_paulo.strftime('%H:%M %d/%m/%Y')
 
-        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) in interaction.user.roles \
+        or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
 
             role1 = discord.utils.get(interaction.guild.roles, id = configData['roles']['adv']['adv1'])
 
@@ -121,8 +126,9 @@ class adcadv(discord.ui.View):
     @discord.ui.button(label = '❎', style = discord.ButtonStyle.blurple)
     async def cancel(self, button: discord.ui.Button, interaction: discord.Interaction):
 
-        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
-        
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) in interaction.user.roles \
+        or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
+
             await interaction.message.delete()
 
             self.stop()
@@ -144,7 +150,8 @@ class rmvadv(discord.ui.View):
     @discord.ui.button(label = '✅'  , style = discord.ButtonStyle.blurple)
     async def rmvadv(self, button: discord.ui.Button, interaction: discord.Interaction):
 
-        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) in interaction.user.roles \
+        or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
 
             await interaction.message.delete()
 
@@ -216,7 +223,8 @@ class rmvadv(discord.ui.View):
     @discord.ui.button(label = '❎', style = discord.ButtonStyle.blurple)
     async def cancel(self, button: discord.ui.Button, interaction: discord.Interaction):
 
-        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) in interaction.user.roles \
+        or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
         
             await interaction.message.delete()
 
@@ -241,7 +249,7 @@ class adccap(discord.ui.View):
         super().__init__(timeout = None)
 
     @discord.ui.button(label = '✅'  , style = discord.ButtonStyle.blurple)
-    async def adc(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def adcc(self, button: discord.ui.Button, interaction: discord.Interaction):
 
         channel = self.bot.get_channel(configData['logs']['cargos'])
 
@@ -272,7 +280,7 @@ class adccap(discord.ui.View):
     @discord.ui.button(label = '❎', style = discord.ButtonStyle.blurple)
     async def cancel(self, button: discord.ui.Button, interaction: discord.Interaction):
 
-        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin'])in interaction.user.roles:
         
             await interaction.message.delete()
 
@@ -297,7 +305,7 @@ class adccargo(discord.ui.View):
         super().__init__(timeout = None)
 
     @discord.ui.button(label = '✅'  , style = discord.ButtonStyle.blurple)
-    async def adc(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def adccg(self, button: discord.ui.Button, interaction: discord.Interaction):
 
         channel = self.bot.get_channel(configData['logs']['cargos'])
 
@@ -331,7 +339,8 @@ class adccargo(discord.ui.View):
     @discord.ui.button(label = '❎', style = discord.ButtonStyle.blurple)
     async def cancel(self, button: discord.ui.Button, interaction: discord.Interaction):
 
-        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) in interaction.user.roles \
+        or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
         
             await interaction.message.delete()
 
@@ -387,7 +396,8 @@ class rmvcap(discord.ui.View):
     @discord.ui.button(label = '❎', style = discord.ButtonStyle.blurple)
     async def cancel(self, button: discord.ui.Button, interaction: discord.Interaction):
 
-        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) in interaction.user.roles \
+        or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
         
             await interaction.message.delete()
 
@@ -446,8 +456,64 @@ class rmvcargo(discord.ui.View):
     @discord.ui.button(label = '❎', style = discord.ButtonStyle.blurple)
     async def cancel(self, button: discord.ui.Button, interaction: discord.Interaction):
 
-        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) in interaction.user.roles \
+        or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
         
+            await interaction.message.delete()
+
+            self.stop()
+
+        else:
+
+            await interaction.response.send_message('Você não tem permissão para usar isso', ephemeral = True)
+
+class ban(discord.ui.View):
+    
+    def __init__(self, bot, membro, motivo, ctx):
+
+        self.membro = membro
+
+        self.bot = bot
+
+        self.motivo = motivo
+
+        self.ctx = ctx
+
+        super().__init__(timeout = None)
+
+    @discord.ui.button(label = '✅', style = discord.ButtonStyle.blurple)
+    async def confirmban(self, button: discord.ui.Button, interaction: discord.Interaction):
+
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) in interaction.user.roles \
+        or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
+
+            l1 = self.bot.get_channel(configData['logs']['mod'])
+
+            guild = interaction.guild
+
+            E = discord.Embed(title = 'Ban', description = f'Pessoa banida: {self.membro.name} \nQuem baniu: {self.ctx.mention}\nAprovado por: {interaction.user.mention} \nmotivo: {self.motivo}')
+            E.set_footer(text = f'id: {self.membro.id}')
+
+            await l1.send(embed = E)
+
+            await interaction.message.delete()
+
+            await interaction.response.send_message(f'{self.membro.name} banido com sucesso', ephemeral = True)
+
+            await guild.ban(user = self.membro ,reason = self.motivo)
+
+            self.stop()
+
+        else:
+
+            await interaction.response.send_message('Você não tem permissão para usar isso', ephemeral = True)
+
+    @discord.ui.button(label = '❎', style = discord.ButtonStyle.blurple)
+    async def denyban(self, button: discord.ui.Button, interaction: discord.Interaction):
+
+        if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['admin']) in interaction.user.roles \
+        or discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['mod']) in interaction.user.roles:
+
             await interaction.message.delete()
 
             self.stop()

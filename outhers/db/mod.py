@@ -1,4 +1,5 @@
-from ..info.fi import *
+from config import  configData
+from pymongo import MongoClient
 
 cluster = MongoClient(configData['mongokey'])
 
@@ -30,6 +31,6 @@ async def desausendb(id):
 
     ausen.update_one({"_id": id.id}, {"$set": {f"Nome": id.name, f"Motivo": 'None', f"Data": 'None', "Ausente?": False}}, upsert = True)
 
-    if (ausen.count_documents({'Ausente?': True}) == 0):
+    if ausen.count_documents({'Ausente?': True}) == 0:
 
         ausen.update_one({"_id": 'validador'}, {"$set": {f"valor": 0}}, upsert = True)
