@@ -1,4 +1,4 @@
-{
+configData = {
 
   "token": "",
   
