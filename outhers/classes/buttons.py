@@ -5,6 +5,7 @@ from ..db.mod import *
 from .selectmenus import *
 from pytz import timezone
 from datetime import datetime
+from discord.ui import View, Button
 
 class adonticket2(discord.ui.View):
 
@@ -45,16 +46,32 @@ class adonticket2(discord.ui.View):
 
         await interaction.message.delete()
 
-        await interaction.channel.send('Ticket aberto 🔓', view = adonticket(self.membro))
+        msg = await interaction.channel.send('Ticket aberto 🔓', view = adonticket(self.membro))
+
+        await tckdb(self.membro, msg.id)
 
     @discord.ui.button(label = '🛑 Deletar Ticket', style = discord.ButtonStyle.blurple)
     async def delete(self,  button: discord.ui.Button, interaction: discord.Interaction):
 
-        await interaction.response.send_message('O ticket sera deletado em segundos')
-
-        await asyncio.sleep(5)
+        await tckdb3(self.membro)
 
         await interaction.channel.delete()
+
+class jumpto(Button):
+
+    def __init__(self, url):
+
+        super().__init__(
+
+            label = 'Atalho para o ticket',
+
+            style=discord.ButtonStyle.url,
+        
+            url = url
+        )
+    async def callback(self, button: discord.ui.Button, interaction: discord.Interaction):
+
+        pass
 
 class adonticket(discord.ui.View):
     
@@ -65,7 +82,7 @@ class adonticket(discord.ui.View):
         super().__init__(timeout = None)
 
     @discord.ui.button(label = '🔒 Fechar ticket', style = discord.ButtonStyle.blurple)
-    async def close(self,  button: discord.ui.Button, interaction: discord.Interaction):
+    async def close(self, button: discord.ui.Button, interaction: discord.Interaction):
 
         if discord.utils.get(interaction.guild.roles, id = configData['roles']['staff']['staff']) not in interaction.user.roles:
 
@@ -98,10 +115,12 @@ class adonticket(discord.ui.View):
         e = discord.Embed(description = f'🔒Ticket fechado por {interaction.user.mention} \nClique no 🔓 para abrir')
 
         await interaction.channel.edit(overwrites = overwrites)
-        await interaction.message.delete()
-        await interaction.channel.send(embed = e, view = adonticket2(member))
 
-        self.stop()
+        await interaction.message.delete()
+
+        msg = await interaction.channel.send(embed = e, view = adonticket2(member))
+
+        await tckdb2(self.membro,msg.id)
 
 class ticket(discord.ui.View):
     
@@ -168,11 +187,13 @@ class ticket(discord.ui.View):
             overwrites = overwrites, 
             category = discord.utils.get(interaction.guild.categories, id = configData['catego']['ticket']))
 
-            await interaction.response.send_message('Ticket criado com sucesso', ephemeral = True)
+            await interaction.response.send_message('Ticket criado com sucesso',view = discord.ui.View(jumpto(f'https://discordapp.com/channels/{interaction.guild.id}/{channel.id}'), timeout = 180), ephemeral = True)
 
-            await channel.send(view=adonticket(member))
+            msg = await channel.send(view=adonticket(member))
 
             await channel.send(f'{interaction.user.mention} {suporte.mention}')
+
+            await tckdb(interaction.user, msg.id)
         
         else:
 

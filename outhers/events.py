@@ -13,9 +13,11 @@ class events(commands.Cog):
 
         await self.bot.change_presence(status=discord.Status.idle)
 
-        await tck(self)
+        await ticketloader(self.bot)
 
-        await stf(self)
+        await bottonstaffloader(self.bot)
+
+        await verifyticket(self.bot)
 
         print(f'EU entrei como {self.bot.user}')
 
@@ -64,6 +66,14 @@ class events(commands.Cog):
         if antes.author.bot:
 
             return
+        
+        if antes.embeds:
+
+            return
+        
+        if antes.components:
+
+            return
 
         if antes.content == depois.content:
 
@@ -90,6 +100,14 @@ class events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message):
+
+        if message.components:
+
+            return
+
+        if message.author == self.bot:
+
+            return
 
         data_e_hora_atuais = datetime.now()
 

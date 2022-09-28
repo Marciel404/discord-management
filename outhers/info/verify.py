@@ -1,5 +1,7 @@
 import discord
 from config import  configData
+from outhers.classes.buttons import adonticket, adonticket2
+from outhers.classes.buttons import ticket, cmdstf
 
 from ..db.mod import *
 from ..db.evento import *
@@ -49,3 +51,39 @@ async def verfypoints(self, member):
         if discord.utils.get(member.guild.roles, name = f'{p["pontos"]}🏆') in member.guild.roles:
 
             await member.add_roles(discord.utils.get(member.guild.roles, name = f'{p["pontos"]}🏆'))
+
+async def bottonstaffloader(self):
+
+    channel = self.get_channel(configData['chats']['cmdstf'])
+
+    mensagem = await channel.fetch_message(int(configData['chats']['ids']['cmdstf']))
+
+    await mensagem.edit(view = cmdstf(self))
+
+async def ticketloader(self):
+
+    channel = self.get_channel(configData['chats']['ticket'])
+
+    mensagem = await channel.fetch_message(int(configData['chats']['ids']['tck']))
+
+    await mensagem.edit(view = ticket())
+
+async def verifyticket(self):
+
+    if tick.find_one({"_id": 'validador'})['valor'] == 1:
+
+        for x in tick.find({'aberto?': True}):
+
+            channel = discord.utils.get(self.get_guild(configData['guild']).channels, name = f'ticket-{x["_id"]}')
+
+            msg = await channel.fetch_message(x['msgid'])
+
+            await msg.edit(view = adonticket(self.get_user(x["_id"])))
+
+        for x in tick.find({'fechado?': True}):
+
+            channel = discord.utils.get(self.get_guild(configData['guild']).channels, name = f'ticket-{x["_id"]}')
+
+            msg = await channel.fetch_message(x['msgid'])
+
+            await msg.edit(view = adonticket2(self.get_user(x["_id"])))

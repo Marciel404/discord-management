@@ -9,6 +9,8 @@ mute = db['adv']
 
 ausen = db['ausente']
 
+tick = db['tickets']
+
 async def advdb(id, qnt, motivo):
 
     mute.update_one({"_id": id.id}, {"$set": {f"Adv{qnt}": motivo}}, upsert = True)
@@ -34,3 +36,28 @@ async def desausendb(id):
     if ausen.count_documents({'Ausente?': True}) == 0:
 
         ausen.update_one({"_id": 'validador'}, {"$set": {f"valor": 0}}, upsert = True)
+
+
+
+async def tckdb(id, id2):
+
+    tick.update_one({"_id": id.id}, {"$set": {f"Nome": id.name, "aberto?": True,"fechado?": False, 'msgid': id2}}, upsert = True)
+
+    tick.update_one({"_id": 'validador'}, {"$set": {f"valor": 1}}, upsert = True)
+
+    if tick.find_one({"_id": 'validador'})['valor'] == 0:
+
+        tick.update_one({"_id": 'validador'}, {"$set": {f"valor": 1}}, upsert = True)
+
+async def tckdb2(id, id2):
+
+    tick.update_one({"_id": id.id}, {"$set": {f"Nome": id.name, "aberto?": False,"fechado?": True, "msgid": id2}}, upsert = True)
+
+async def tckdb3(id):
+
+    tick.update_one({"_id": id.id}, {"$set": {f"Nome": id.name, "aberto?": False,"fechado?": False, "msgid": None}}, upsert = True)
+
+    if tick.count_documents({'fechado?': True}) == 0\
+    and tick.count_documents({'aberto?': True}) == 0:
+
+        tick.update_one({"_id": 'validador'}, {"$set": {f"valor": 0}}, upsert = True)

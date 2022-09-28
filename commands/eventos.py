@@ -9,7 +9,7 @@ class eventos(commands.Cog):
 
         self.bot = bot
 
-    @discord.slash_command(name = 'adcponto', description = 'Adiciona um ponto de evento para um membro')
+    @discord.slash_command(guild_only = True,name = 'adcponto', description = 'Adiciona um ponto de evento para um membro')
     @discord.option(name = 'membro', description = 'mencione o membro')
     async def addpoints(self, ctx, membro: discord.Member = None):
 
@@ -49,7 +49,7 @@ class eventos(commands.Cog):
 
             await ctx.respond(f'Ponto adicionado com sucesso e {role.mention} adicionado com sucesso', ephemeral = True)
     
-    @discord.slash_command(name = 'rmvponto', description = 'remove um ponto de evento para um membro')
+    @discord.slash_command(guild_only = True,name = 'rmvponto', description = 'remove um ponto de evento para um membro')
     @discord.option(name = 'membro', description = 'mencione o membro')
     async def rmvpoints(self, ctx, membro: discord.Member = None):
 
@@ -105,7 +105,7 @@ class eventos(commands.Cog):
 
         await ctx.respond(f'Ponto removido com sucesso e agora este membro não posue pontos', ephemeral = True)
 
-    @discord.slash_command(name = 'verpontos', description = 'mostra os pontos de evento de um membro')
+    @discord.slash_command(guild_only = True,name = 'verpontos', description = 'mostra os pontos de evento de um membro')
     @discord.option(name = 'membro', description = 'mencione o membro')
     async def verpontos(self, ctx, membro: discord.Member = None):
 

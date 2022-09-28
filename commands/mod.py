@@ -3,7 +3,7 @@ import discord
 from outhers.db.mod import mute, ausen
 from config import  configData
 from discord.ext import commands
-from outhers.classes.buttons import ticket, kick, cmdstf
+from outhers.classes.buttons import kick
 
 class Mod(commands.Cog):
 
@@ -11,7 +11,7 @@ class Mod(commands.Cog):
 
         self.bot = bot
 
-    @discord.slash_command(name = 'kick', description = 'Expulsa um membro')
+    @discord.slash_command(guild_only = True,name = 'kick', description = 'Expulsa um membro')
     @discord.option(name = 'Membro', description = 'Escolha o membro para expulsar')
     @discord.option(name = 'Motivo', description = 'Escreva o motivo de expulsar')
     @commands.bot_has_permissions(kick_members = True)
@@ -50,7 +50,7 @@ class Mod(commands.Cog):
 
         await cmdlc.send(cmdl)
 
-    @discord.slash_command(name = 'embed', description = 'Envia uma embed em um chat desejado')
+    @discord.slash_command(guild_only = True,name = 'embed', description = 'Envia uma embed em um chat desejado')
     @discord.option(name = 'channel', description = 'Escolha o chat para enviar a embed')
     @discord.option(name = 'title', description = 'Escreva o titulo da embed')
     @discord.option(name = 'link_image', description = 'Escolha a imagem da embed')
@@ -103,7 +103,7 @@ class Mod(commands.Cog):
 
         await cmdlc.send(cmdl)
 
-    @discord.slash_command(name = 'clear', description = 'Limpa o chat')
+    @discord.slash_command(guild_only = True,name = 'clear', description = 'Limpa o chat')
     @discord.option(name = 'quantidade',type = int, description = 'Escolha a quantidade de mensagens a limpar')
     @commands.has_permissions(manage_channels = True)
     async def clear(self, ctx, quantidade: int = 0):
@@ -130,7 +130,7 @@ class Mod(commands.Cog):
 
         await cmdlc.send(cmdl)
 
-    @discord.slash_command(name = 'unban', description = 'Desbane um membro')
+    @discord.slash_command(guild_only = True,name = 'unban', description = 'Desbane um membro')
     @discord.option(name = 'id', description = 'Coloque o id do membro a desbanir')
     @discord.option(name = 'motivo', description = 'Escreva o motivo de Banir')
     @commands.bot_has_permissions(ban_members = True)
@@ -161,7 +161,7 @@ class Mod(commands.Cog):
 
         await cmdlc.send(cmdl)
 
-    @discord.slash_command(name = 'say', description = 'Envia uma mensagem em um chat')
+    @discord.slash_command(guild_only = True,name = 'say', description = 'Envia uma mensagem em um chat')
     @discord.option(name = 'canal', description = 'Escolha o canal que falar')
     @discord.option(name = 'mensagem', description = 'Escreva oq deseja que eu fale')
     async def say(self, ctx, canal: discord.TextChannel = None, *, mensagem = None):
@@ -186,7 +186,7 @@ class Mod(commands.Cog):
 
         await channel2.send(mensagem)
 
-    @discord.slash_command(name = 'veradv', description = 'Envia as advs de um membro')
+    @discord.slash_command(guild_only = True,name = 'veradv', description = 'Envia as advs de um membro')
     @discord.option(name = 'membro', description = 'Escolha o membro a remover a advertencia')
     async def veradv(self, ctx, membro: discord.Member):
 
@@ -246,7 +246,7 @@ class Mod(commands.Cog):
 
         await cmdlc.send(cmdl)
 
-    @discord.slash_command(name = 'editembed', description = 'Edita uma embed já enviada')
+    @discord.slash_command(guild_only = True,name = 'editembed', description = 'Edita uma embed já enviada')
     @discord.option(name = 'channel', description = 'Envie o id do canal')
     @discord.option(name = 'embedid', description = 'Envie o id da embed')
     @discord.option(name = 'title', description = 'Escreva o titulo da embed')
@@ -300,7 +300,7 @@ class Mod(commands.Cog):
 
         await cmdlc.send(cmdl)
 
-    @discord.slash_command(name = 'editmsg', description = 'edita uma mensagem já enviada')
+    @discord.slash_command(guild_only = True,name = 'editmsg', description = 'edita uma mensagem já enviada')
     @discord.option(name = 'channel', description = 'envie o id do canal')
     @discord.option(name = 'messageid', description = 'envie o id da mensagem')
     @discord.option(name = 'msg', description = 'Escreva a mensagem á editar')
@@ -321,7 +321,7 @@ class Mod(commands.Cog):
 
         await cmdlc.send(cmdl)
 
-    @discord.slash_command(name = 'fmv', description = 'Move um membro para a sua call privada')
+    @discord.slash_command(guild_only = True,name = 'fmv', description = 'Move um membro para a sua call privada')
     @discord.option(name = 'membro', description = 'Escolha o membro para mover para uma call')
     @discord.option(name = 'canal', description = 'Escolha o canal para mover o membro')
     async def fmv(self, ctx, membro: discord.Member = None, canal: discord.VoiceChannel = None):
@@ -344,7 +344,7 @@ class Mod(commands.Cog):
 
         await cmdlc.send(cmdl)
 
-    @discord.slash_command(name = 'fdsc', description = 'Desconecta uma pessoa da call')
+    @discord.slash_command(guild_only = True,name = 'fdsc', description = 'Desconecta uma pessoa da call')
     @discord.option(name = 'membro', description = 'Escolha o membro para desconectar da call')
     async def fdsc(self, ctx, membro: discord.Member = None):
 
@@ -364,7 +364,7 @@ class Mod(commands.Cog):
 
         await cmdlc.send(cmdl)
 
-    @discord.slash_command(name = 'verausentes', description = 'Mostra todos os membros em estado de ausente')
+    @discord.slash_command(guild_only = True,name = 'verausentes', description = 'Mostra todos os membros em estado de ausente')
     async def verausente(self, ctx):
 
         if ausen.find_one({"_id": 'validador'})['valor'] == 1:
@@ -379,7 +379,7 @@ class Mod(commands.Cog):
 
             await ctx.respond('Ninguem está ausente no momento', ephemeral = True)
 
-    @discord.slash_command(name = 'verticket', description = 'Mostra as mensagens do ultimo ticket de um membro')
+    @discord.slash_command(guild_only = True,name = 'verticket', description = 'Mostra as mensagens do ultimo ticket de um membro')
     @discord.option(name = 'membro', description = 'Mostra as mensagens o ultimo ticket da pessoa')
     async def verticket(self, ctx, membro: discord.Member):
 
@@ -390,22 +390,6 @@ class Mod(commands.Cog):
         except:
 
             await ctx.respond('Esse membro ainda não abriu um ticket', ephemeral = True)
-
-async def stf(self):
-
-    channel = self.bot.get_channel(configData['chats']['cmdstf'])
-
-    mensagem = await channel.fetch_message(int(configData['chats']['ids']['cmdstf']))
-
-    await mensagem.edit(view = cmdstf(self.bot))
-
-async def tck(self):
-
-    channel = self.bot.get_channel(configData['chats']['ticket'])
-
-    mensagem = await channel.fetch_message(int(configData['chats']['ids']['tck']))
-
-    await mensagem.edit(view = ticket())
 
 def setup(bot:commands.Bot):
     bot.add_cog(Mod(bot))
