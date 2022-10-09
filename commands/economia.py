@@ -1,7 +1,7 @@
 import discord
 
 from discord.ext import commands
-from outhers.db.economy import update_bank
+from db.economy import update_bank
 
 class economia(commands.Cog):
     def __init__(self, bot:commands.Bot):

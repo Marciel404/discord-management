@@ -1,7 +1,7 @@
 import discord
 
 from discord.ext import commands
-from outhers.db.evento import *
+from db.evento import *
 
 class eventos(commands.Cog):
 

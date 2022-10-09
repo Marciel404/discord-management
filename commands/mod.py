@@ -1,9 +1,10 @@
-import discord
+import discord, hexacolors
 
-from outhers.db.mod import mute, ausen
-from config import  configData
+from db.mod import adv, ausen
+from utils.configs import  configData
 from discord.ext import commands
-from outhers.classes.buttons import kick
+from classes.staff import kick
+from hexacolors import stringcolor, hexacolor
 
 class Mod(commands.Cog):
 
@@ -56,42 +57,43 @@ class Mod(commands.Cog):
     @discord.option(name = 'link_image', description = 'Escolha a imagem da embed')
     @discord.option(name = 'mention', description = 'Mencione um cargo para mencionar na embed')
     @discord.option(name = 'content', description = 'Escreva o conteudo da embed')
+    @discord.option(name = 'color', description = 'Escolha a cor da embed')
     @commands.has_guild_permissions(manage_channels = True)
-    async def embed(self, ctx, channel: discord.TextChannel = None, title = None, img = None, mention: discord.Role = None, *, content = None):
-
-        if ctx.guild == None:
-            
-            return
+    async def embed(self, ctx, channel: discord.TextChannel = None, title = None, img = '', mention: discord.Role = None,color = None, *, content = None):
 
         if channel == None:
 
             channel = ctx.channel
 
-        if title == None:
+        if color == None:
 
-            title = ''
+            color = stringcolor('indigo')
 
-        if img == None:
+        else:
 
-            img = ''
+            try:
 
-        if content == None:
+                color = stringcolor(color)
 
-            content = ''
+            except:
 
-        if mention == None:
+                try:
 
-            mention == ''
+                    color = hexacolor(color)
+                
+                except:
 
-        else: 
+                    color = stringcolor('indigo')
+
+        if mention != None:
 
             mention = mention.mention
 
-        e = discord.Embed(title = title, description = content, colour = 0x4B0082)
+        e = discord.Embed(title = title, description = content, colour = color)
 
         e.set_image(url = img)
 
-        e.set_footer(text = f'{ctx.guild.name}, author: {ctx.author.name}', icon_url = ctx.guild.icon)
+        e.set_footer(text = f'{ctx.guild.name}', icon_url = ctx.guild.icon)
 
         channel2 = self.bot.get_channel(channel.id)
 
@@ -192,7 +194,7 @@ class Mod(commands.Cog):
 
         myquery = { "_id": membro.id}
 
-        if (mute.count_documents(myquery) == 1):
+        if adv.count_documents(myquery) == 1:
 
             cmdl = f'''{ctx.author} usou o comando {ctx.command.name} e viu as advertencias de {membro.display_name}'''
 
@@ -200,13 +202,13 @@ class Mod(commands.Cog):
 
             await cmdlc.send(cmdl)
 
-            adv = mute.find_one({"_id": membro.id})
+            ad = adv.find_one({"_id": membro.id})
 
-            adv1 = adv['Adv1']
+            adv1 = ad['Adv1']
 
-            adv2 = adv['Adv2']
+            adv2 = ad['Adv2']
 
-            adv3 = adv['Adv3']
+            adv3 = ad['Adv3']
 
             if adv1 == 'None':
 
@@ -253,48 +255,49 @@ class Mod(commands.Cog):
     @discord.option(name = 'img', description = 'Escolha a imagem da embed')
     @discord.option(name = 'mention', description = 'Mencione um cargo para mencionar na embed')
     @discord.option(name = 'content', description = 'Escreva o conteudo da embed')
+    @discord.option(name = 'color', description = 'Escolha a cor da embed')
     @commands.has_guild_permissions(manage_channels = True)
-    async def editembed(self, ctx, channel: discord.TextChannel = None, embedid = None, title = None, img = None, mention: discord.Role = None, *, content = None):
-
-        if ctx.guild == None:
-            
-            return
+    async def editembed(self, ctx, channel: discord.TextChannel = None, embedid = None, title = None, img = '', mention: discord.Role = None, color = None, *, content = None):
 
         if channel == None:
 
             channel = ctx.channel
+        
+        if color == None:
 
-        if title == None:
+            color = stringcolor('indigo')
 
-            title = ''
+        else:
 
-        if img == None:
+            try:
 
-            img = ''
+                color = stringcolor(color)
 
-        if content == None:
+            except:
 
-            content = ''
+                try:
 
-        if mention == None:
+                    color = hexacolor(color)
+                
+                except:
 
-            mention == ''
+                    color = stringcolor('indigo')
 
-        else: 
+        if mention != None: 
 
             mention = mention.mention
 
         mensagem = await channel.fetch_message(int(embedid))
 
-        e = discord.Embed(title = title, description = content, colour = 0x4B0082)
+        e = discord.Embed(title = title, description = content, colour = color)
 
         e.set_image(url = img)
 
-        e.set_footer(text = f'{ctx.guild.name} author: {ctx.author.name}', icon_url = ctx.guild.icon)
+        e.set_footer(text = f'{ctx.guild.name}', icon_url = ctx.guild.icon)
 
         await mensagem.edit(mention,embed = e)
 
-        cmdl = f'{ctx.author} usou o comando {ctx.command.name} e edtou a embed {embedid} no canal {channel.mention}'
+        cmdl = f'{ctx.author} usou o comando {ctx.command.name} e editou a embed {embedid} no canal {channel.mention}'
 
         cmdlc = self.bot.get_channel(configData['logs']['usocomandos'])
 
@@ -390,6 +393,11 @@ class Mod(commands.Cog):
         except:
 
             await ctx.respond('Esse membro ainda não abriu um ticket', ephemeral = True)
+    
+    @discord.slash_command(name = 'list_colors', description = 'Lista as cores disponiveis por escrita')
+    async def listcolors(self, ctx):
+
+        await ctx.respond(hexacolors.listcolors, ephemeral = True)
 
 def setup(bot:commands.Bot):
     bot.add_cog(Mod(bot))
